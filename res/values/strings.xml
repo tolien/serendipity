@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="app_name">Serendipitous Travel Guide</string>
+	<string name="no_locations">No Locations Yet</string>
+	<string name="menu_loc_insert">Add a location</string>
+	<string name="menu_loc_clear">Clear locations</string>
+</resources>
