@@ -4,4 +4,5 @@
 	<string name="no_locations">No Locations Yet</string>
 	<string name="menu_loc_insert">Add a location</string>
 	<string name="menu_loc_clear">Clear locations</string>
+	<string name="menu_map_center">Go to current location</string>
 </resources>
