@@ -37,9 +37,6 @@ public class PositionOverlay extends Overlay
 			Paint paint = new Paint();
 			paint.setARGB(50, 0, 0, 0);
 			paint.setAntiAlias(true);
-			paint.setFakeBoldText(true);
-			
-			canvas.drawText("You Are Here", point.x + radius, point.y, paint);
 			
 			canvas.drawCircle(point.x, point.y, accuracy + radius, paint);
 			
@@ -55,11 +52,6 @@ public class PositionOverlay extends Overlay
 	{
 		// TODO Auto-generated method stub
 		return super.onTap(p, mapView);
-	}
-	
-	public Location getLocation()
-	{
-		return location;
 	}
 	
 	public void setLocation(Location location)
