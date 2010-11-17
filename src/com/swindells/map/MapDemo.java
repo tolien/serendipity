@@ -1,16 +1,12 @@
 package com.swindells.map;
 
-import java.io.IOException;
 import java.util.List;
-import java.util.Locale;
 import java.util.Observable;
 import java.util.Observer;
 
 import com.google.android.maps.*;
 
 import android.content.Context;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -47,7 +43,7 @@ public class MapDemo extends MapActivity implements Observer
 		mapController = myMapView.getController();
 		List<Overlay> overlays = myMapView.getOverlays();
 
-		positionOverlay = new PositionOverlay();
+		positionOverlay = new PositionOverlay(this.getResources().getDrawable(R.drawable.marker));
 		overlays.add(positionOverlay);
 		myMapView.postInvalidate();
 
@@ -66,6 +62,12 @@ public class MapDemo extends MapActivity implements Observer
 		
 		Location lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 		updateLocation(lastKnownLocation);
+		
+		VisitableList places = new VisitableList(getResources().getDrawable(R.drawable.marker));
+		GeoPoint location = new GeoPoint((int) (lastKnownLocation.getLatitude() * 1E6), (int) (lastKnownLocation.getLongitude() * 1E6));
+		OverlayItem i = new OverlayItem(location, "", "");
+		places.addOverlay(i);
+		overlays.add(places);
 	}
 
 	public void updateLocation(Location location)
@@ -82,34 +84,25 @@ public class MapDemo extends MapActivity implements Observer
 					longitude.intValue());
 			mapController.setCenter(point);
 			mapController.setZoom(17);
-			Geocoder gc = new Geocoder(this, Locale.UK);
-			List<Address> addresses = null;
 
 			StringBuilder sb = new StringBuilder();
 
-			try
+			sb.append(location.getAccuracy() + " metres").append("\n");
+			float lastUpdated = (System.currentTimeMillis() - location.getTime()) / 1000;
+			
+			if (lastUpdated >= 60 * 60)
 			{
-				addresses = gc.getFromLocation(lat, lng, 10);
-			} catch (IOException e)
-			{
-				sb.append("Lookup failed").append("\n").append(e.getMessage());
+				lastUpdated /= (60 * 60);
+				sb.append("Last Updated: " + lastUpdated + " hours ago").append("\n");
 			}
-			if (addresses != null && addresses.size() > 0)
+			else if (lastUpdated >= 60)
 			{
-				//Address address = addresses.get(0);
-
-				/*
-				for (int i = 0; i < address.getMaxAddressLineIndex(); i++)
-				{
-					sb.append(address.getAddressLine(i)).append("\n");
-				}
-				*/
-
-				// sb.append(address.getLocality()).append("\n");
-				// sb.append(address.getPostalCode()).append("\n");
-				//sb.append(location.getAccuracy() + " metres").append("\n");
-				long lastUpdated = (System.currentTimeMillis() - location.getTime()) / 1000;
-				sb.append("Last Updated: " + lastUpdated + " seconds ago").append("\n");
+				lastUpdated /= 60.;
+				sb.append("Last Updated: " + lastUpdated + " minutes ago").append("\n");
+			}
+			else
+			{
+				sb.append("Last Updated: " + lastUpdated + " seconds ago").append("\n");				
 			}
 
 			String latLongString = "Latitude: " + lat + "\nLongitude: " + lng;
