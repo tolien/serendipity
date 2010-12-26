@@ -5,12 +5,11 @@
 	android:layout_height="fill_parent">
 	<TextView
 	 android:id="@+id/myLocationText" android:layout_width="fill_parent" android:layout_height="wrap_content" 
-	 />
+	 />	 
 	<com.google.android.maps.MapView
 		android:enabled="true" android:id="@+id/myMapView"
-		android:layout_width="fill_parent" android:layout_height="fill_parent"
+		android:layout_width="wrap_content" android:layout_height="wrap_content"
 		android:apiKey="0SP22orPtytDijGJPmrBbxD63DK459M5loeE9Wg"
 		android:clickable="true"
 		/>
-
 </LinearLayout>

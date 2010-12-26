@@ -12,39 +12,36 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
 
 public class MapDemo extends MapActivity implements Observer
 {
-
-	private static final int INSERT_ID = Menu.FIRST;
-	private static final int CLEAR_ID = Menu.FIRST + 1;
-	private static final int CENTER_ID = Menu.FIRST + 2;
+	private static final int CLEAR_ID = Menu.FIRST;
+	private static final int CENTER_ID = Menu.FIRST + 1;
 
 	private MapController mapController;
-	private Double lat;
-	private Double lng;
-	private TextView myLocationText;
 	private PositionOverlay positionOverlay;
 
 	private LocationManager locationManager;
 	private LocationObservable myLocationListener;
+	
+	private boolean starting;
 
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
+		
 		setContentView(R.layout.map);
 
 		MapView myMapView = (MapView) findViewById(R.id.myMapView);
-		myLocationText = (TextView) findViewById(R.id.myLocationText);
 
 		mapController = myMapView.getController();
 		List<Overlay> overlays = myMapView.getOverlays();
 
-		positionOverlay = new PositionOverlay(this.getResources().getDrawable(R.drawable.marker));
+		positionOverlay = new PositionOverlay();
 		overlays.add(positionOverlay);
+		myMapView.setSatellite(false);
 		myMapView.postInvalidate();
 
 		MyLocationOverlay myLocationOverlay = new MyLocationOverlay(this,
@@ -59,60 +56,45 @@ public class MapDemo extends MapActivity implements Observer
 
 		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
 				120000, 100, myLocationListener);
-		
-		Location lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+		Location lastKnownLocation = locationManager
+				.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 		updateLocation(lastKnownLocation);
+
+		VisitableList places = new VisitableList(getResources().getDrawable(
+				R.drawable.marker), this);
 		
-		VisitableList places = new VisitableList(getResources().getDrawable(R.drawable.marker));
-		GeoPoint location = new GeoPoint((int) (lastKnownLocation.getLatitude() * 1E6), (int) (lastKnownLocation.getLongitude() * 1E6));
-		OverlayItem i = new OverlayItem(location, "", "");
-		places.addOverlay(i);
-		overlays.add(places);
+		if (lastKnownLocation != null)
+		{
+			GeoPoint location = new GeoPoint(
+					(int) (lastKnownLocation.getLatitude() * 1E6),
+					(int) (lastKnownLocation.getLongitude() * 1E6));
+			String snippet = location.getLatitudeE6() + ", " + location.getLongitudeE6();
+			snippet += "\nLast known location at " + lastKnownLocation.getTime();
+			OverlayItem i = new OverlayItem(location, "Location", snippet);
+			places.addOverlay(i);
+			overlays.add(places);
+		}
 	}
 
 	public void updateLocation(Location location)
 	{
 		if (location != null)
 		{
-			lat = location.getLatitude();
-			lng = location.getLongitude();
 			positionOverlay.setLocation(location);
-
-			Double latitude = lat * 1E6;
-			Double longitude = lng * 1E6;
-			GeoPoint point = new GeoPoint(latitude.intValue(),
-					longitude.intValue());
-			mapController.setCenter(point);
-			mapController.setZoom(17);
-
-			StringBuilder sb = new StringBuilder();
-
-			sb.append(location.getAccuracy() + " metres").append("\n");
-			float lastUpdated = (System.currentTimeMillis() - location.getTime()) / 1000;
 			
-			if (lastUpdated >= 60 * 60)
+			if (!starting)
 			{
-				lastUpdated /= (60 * 60);
-				sb.append("Last Updated: " + lastUpdated + " hours ago").append("\n");
+				GeoPoint p = new GeoPoint((int) (location.getLatitude() * 1E6), (int) (location.getLongitude() * 1E6));
+				mapController.animateTo(p);
 			}
-			else if (lastUpdated >= 60)
-			{
-				lastUpdated /= 60.;
-				sb.append("Last Updated: " + lastUpdated + " minutes ago").append("\n");
-			}
-			else
-			{
-				sb.append("Last Updated: " + lastUpdated + " seconds ago").append("\n");				
-			}
-
-			String latLongString = "Latitude: " + lat + "\nLongitude: " + lng;
-			myLocationText.setText(latLongString + "\n"
-					+ sb.toString());
 		}
 
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.google.android.maps.MapActivity#onDestroy()
 	 */
 	@Override
@@ -122,7 +104,9 @@ public class MapDemo extends MapActivity implements Observer
 		super.onDestroy();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.google.android.maps.MapActivity#onPause()
 	 */
 	@Override
@@ -132,7 +116,9 @@ public class MapDemo extends MapActivity implements Observer
 		super.onPause();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.google.android.maps.MapActivity#onResume()
 	 */
 	@Override
@@ -146,11 +132,8 @@ public class MapDemo extends MapActivity implements Observer
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
-		// TODO Auto-generated method stub
 		super.onCreateOptionsMenu(menu);
 		menu.add(0, CENTER_ID, 0, R.string.menu_map_center);
-		menu.add(0, INSERT_ID, 0, R.string.menu_loc_insert);
-		menu.add(0, CLEAR_ID, 0, R.string.menu_loc_clear);
 		return true;
 	}
 
@@ -160,8 +143,13 @@ public class MapDemo extends MapActivity implements Observer
 		int id = item.getItemId();
 		if (id == CENTER_ID)
 		{
-			Location lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-			updateLocation(lastKnownLocation);			
+			Location lastKnownLocation = locationManager
+					.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+			updateLocation(lastKnownLocation);
+		}
+		else if (id == CLEAR_ID)
+		{
+			
 		}
 		return super.onMenuItemSelected(featureId, item);
 	}
@@ -176,7 +164,7 @@ public class MapDemo extends MapActivity implements Observer
 	@Override
 	public void update(Observable arg0, Object arg1)
 	{
-		updateLocation((Location)arg1);
+		updateLocation((Location) arg1);
 	}
 
 }

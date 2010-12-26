@@ -3,30 +3,17 @@ package com.swindells.map;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Point;
-import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
-import com.google.android.maps.OverlayItem;
 import com.google.android.maps.Projection;
 
 public class PositionOverlay extends Overlay
 {
 	Location location;
-	private Drawable marker;
 	
-	public PositionOverlay()
-	{
-		marker = null;
-	}
-	
-	public PositionOverlay(Drawable p)
-	{
-		this.marker = p;
-	}
 	/* (non-Javadoc)
 	 * @see com.google.android.maps.Overlay#draw(android.graphics.Canvas, com.google.android.maps.MapView, boolean)
 	 */
@@ -49,7 +36,7 @@ public class PositionOverlay extends Overlay
 			paint.setARGB(50, 0, 0, 0);
 			paint.setAntiAlias(true);
 			
-			canvas.drawCircle(point.x, point.y, Math.max(accuracy, 10), paint);
+			canvas.drawCircle(point.x, point.y, accuracy, paint);
 		}
 	}
 
