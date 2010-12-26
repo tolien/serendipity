@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:id="@+id/bubble" xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="fill_parent" android:orientation="vertical">
+
+	<TextView android:id="@+id/bubbleTitle" android:layout_width="fill_parent"
+		android:layout_height="fill_parent" android:textColor="#000000"></TextView>
+	<TextView android:id="@+id/bubbleText" android:layout_width="fill_parent"
+		android:layout_height="fill_parent" android:textColor="#000000"></TextView>
+</LinearLayout>
