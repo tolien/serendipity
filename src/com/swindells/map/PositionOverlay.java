@@ -39,16 +39,6 @@ public class PositionOverlay extends Overlay
 			canvas.drawCircle(point.x, point.y, accuracy, paint);
 		}
 	}
-
-	/* (non-Javadoc)
-	 * @see com.google.android.maps.Overlay#onTap(com.google.android.maps.GeoPoint, com.google.android.maps.MapView)
-	 */
-	@Override
-	public boolean onTap(GeoPoint p, MapView mapView)
-	{
-		// TODO Auto-generated method stub
-		return super.onTap(p, mapView);
-	}
 	
 	public void setLocation(Location location)
 	{
