@@ -17,8 +17,6 @@ public class LocationObservable extends Observable implements LocationListener
 	public void notifyObservers()
 	{
 		super.setChanged();
-		int o = countObservers();
-		System.out.println(o);
 		super.notifyObservers(location);
 	}
 
