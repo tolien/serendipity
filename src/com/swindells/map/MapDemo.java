@@ -15,7 +15,6 @@ import android.view.MenuItem;
 
 public class MapDemo extends MapActivity implements Observer
 {
-	private static final int CLEAR_ID = Menu.FIRST;
 	private static final int CENTER_ID = Menu.FIRST + 1;
 
 	private MapController mapController;
@@ -35,7 +34,6 @@ public class MapDemo extends MapActivity implements Observer
 		setContentView(R.layout.map);
 
 		MapView myMapView = (MapView) findViewById(R.id.myMapView);
-
 		mapController = myMapView.getController();
 		List<Overlay> overlays = myMapView.getOverlays();
 
@@ -146,10 +144,6 @@ public class MapDemo extends MapActivity implements Observer
 			Location lastKnownLocation = locationManager
 					.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 			updateLocation(lastKnownLocation);
-		}
-		else if (id == CLEAR_ID)
-		{
-			
 		}
 		return super.onMenuItemSelected(featureId, item);
 	}
