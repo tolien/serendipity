@@ -15,7 +15,10 @@ import android.view.MenuItem;
 
 public class MapDemo extends MapActivity implements Observer
 {
+	private static final int GO_ID = Menu.FIRST;
 	private static final int CENTER_ID = Menu.FIRST + 1;
+	
+	public static final int ACTIVITY_ADD = 0;
 
 	private MapController mapController;
 	private PositionOverlay positionOverlay;
@@ -132,6 +135,7 @@ public class MapDemo extends MapActivity implements Observer
 	{
 		super.onCreateOptionsMenu(menu);
 		menu.add(0, CENTER_ID, 0, R.string.menu_map_center);
+		menu.add(0, GO_ID, 1, R.string.menu_start_service);
 		return true;
 	}
 
@@ -144,6 +148,10 @@ public class MapDemo extends MapActivity implements Observer
 			Location lastKnownLocation = locationManager
 					.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 			updateLocation(lastKnownLocation);
+		}
+		else if (id == GO_ID)
+		{
+			
 		}
 		return super.onMenuItemSelected(featureId, item);
 	}
