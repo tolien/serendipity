@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_height="fill_parent" android:layout_width="fill_parent">
+
+	<TextView android:id="@+id/locationQuestion" android:text="@string/addloc_question"
+		android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginBottom="160dp" />
+
+	<TextView android:id="@+id/locationName" android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:text="@string/no_location_given"
+		android:textStyle="bold" android:layout_below="@id/locationQuestion" />
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_height="wrap_content" android:layout_width="fill_parent"
+	android:orientation="horizontal" android:layout_below="@id/locationName" android:layout_alignParentBottom="true">
+	
+	<Button android:text="@string/add_confirm"
+		android:layout_height="wrap_content" android:id="@+id/add_confirm"
+		android:layout_width="wrap_content" android:layout_alignParentBottom="true" android:layout_alignParentLeft="true" />
+
+	<Button android:id="@+id/add_decline" android:text="@string/add_decline"
+		android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_toRightOf="@id/add_confirm"
+		android:layout_alignParentBottom="true" />
+</RelativeLayout>
+</RelativeLayout>
