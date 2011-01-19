@@ -3,6 +3,7 @@ package com.swindells.map;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.text.Spannable;
@@ -94,9 +95,15 @@ public class VisitableList extends ItemizedOverlay<OverlayItem>
 			
 			location = oi.getPoint();
 			
+			final Intent addIntent = new Intent(ac, AddLocation.class);
+			addIntent.putExtra(LocationsDbAdapter.KEY_NAME, oi.getTitle());
+			addIntent.putExtra(LocationsDbAdapter.KEY_DESC, oi.getSnippet());
+			
 			popup.setOnClickListener(new View.OnClickListener() {
 				public void onClick(View v) {
 					hide();
+					
+			        ac.startActivityForResult(addIntent, MapDemo.ACTIVITY_ADD);
 				}
 			});
 		}
