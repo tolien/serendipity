@@ -16,6 +16,8 @@ import android.view.MenuItem;
 public class MapDemo extends MapActivity implements Observer
 {
 	private static final int CENTER_ID = Menu.FIRST + 1;
+	
+	public static final int ACTIVITY_ADD = 0;
 
 	private MapController mapController;
 	private PositionOverlay positionOverlay;
