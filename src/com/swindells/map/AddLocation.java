@@ -3,6 +3,8 @@ package com.swindells.map;
 import android.app.Activity;
 import android.app.ExpandableListActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 public class AddLocation extends Activity
@@ -25,6 +27,17 @@ public class AddLocation extends Activity
 			String locName = extras.getString(LocationsDbAdapter.KEY_DESC);
 			title.setText(locName);
 		}
+		
+		final Button button = (Button) findViewById(R.id.add_decline);
+		button.setOnClickListener(new View.OnClickListener()
+		{
+			
+			@Override
+			public void onClick(View v)
+			{
+				finish();				
+			}
+		});
 
 	}
 
