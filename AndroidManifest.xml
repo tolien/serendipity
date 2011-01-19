@@ -13,7 +13,7 @@
             </intent-filter>
         </activity>
 
-    		<activity android:name="AddLocation">
+    		<activity android:name="AddLocation" android:finishOnTaskLaunch="true">
 			<intent-filter>
 				<action android:name="android.intent.action.ADD_LOCATION" />
 				<data android:scheme="cityguide" />
