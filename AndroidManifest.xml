@@ -13,7 +13,12 @@
             </intent-filter>
         </activity>
 
-    <activity android:name="LocEdit"></activity>
+    		<activity android:name="AddLocation">
+			<intent-filter>
+				<action android:name="android.intent.action.ADD_LOCATION" />
+				<data android:scheme="cityguide" />
+			</intent-filter>
+		</activity>
 
 </application>
 
