@@ -7,6 +7,7 @@ import java.util.Observer;
 import com.google.android.maps.*;
 
 import android.content.Context;
+import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -151,7 +152,7 @@ public class MapDemo extends MapActivity implements Observer
 		}
 		else if (id == GO_ID)
 		{
-			
+			startService(new Intent(this, SerendipitousService.class));
 		}
 		return super.onMenuItemSelected(featureId, item);
 	}
