@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 public class AddLocation extends Activity
 {
-	private LocationsDbAdapter mdbHelper;
+	private SelectedLocationsDbAdapter mdbHelper;
 
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -24,7 +24,7 @@ public class AddLocation extends Activity
 		{
 
 			TextView title = (TextView) findViewById(R.id.locationName);
-			String locName = extras.getString(LocationsDbAdapter.KEY_DESC);
+			String locName = extras.getString(SelectedLocationsDbAdapter.KEY_DESC);
 			title.setText(locName);
 		}
 		

@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-public class LocationsDbAdapter
+public class SelectedLocationsDbAdapter
 {
 	public static final String KEY_NAME = "name";
 	public static final String KEY_DESC = "description";
@@ -53,13 +53,13 @@ public class LocationsDbAdapter
         }
     }
     
-    public LocationsDbAdapter(Context ctx)
+    public SelectedLocationsDbAdapter(Context ctx)
     {
     	mCtx = ctx;
     }
     
 
-    public LocationsDbAdapter open() throws SQLException {
+    public SelectedLocationsDbAdapter open() throws SQLException {
         mDbHelper = new DatabaseHelper(mCtx);
         mDb = mDbHelper.getWritableDatabase();
         return this;
