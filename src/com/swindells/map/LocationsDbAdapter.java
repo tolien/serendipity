@@ -1,5 +1,6 @@
 package com.swindells.map;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
@@ -14,14 +15,14 @@ public class LocationsDbAdapter
 	public static final String KEY_LONGITUDE = "long";
     public static final String KEY_ROWID = "_id";
     
-    public static final String TAG = "LocationDbAdapater";
+    public static final String TAG = "SelectedDbAdapater";
 
     /**
      * Database creation sql statement
      */
     private static final String DATABASE_CREATE =
         "create table locations (_id integer primary key autoincrement, "
-        + "title text not null, body text not null);";
+        + "title text not null, body text not null, latitude integer not null, longitude integer not null);";
 
     private static final String DATABASE_NAME = "data";
     private static final String DATABASE_TABLE = "locations";
@@ -62,5 +63,27 @@ public class LocationsDbAdapter
         mDbHelper = new DatabaseHelper(mCtx);
         mDb = mDbHelper.getWritableDatabase();
         return this;
+    }
+    
+    public void close()
+    {
+    	mDb.close();
+    }
+    
+    public long addSelection(Location l)
+    {
+    	ContentValues values = new ContentValues();
+    	values.put(KEY_LATITUDE, l.getLatitude());
+    	values.put(KEY_LONGITUDE, l.getLongitude());
+    	values.put(KEY_NAME, l.getTitle());
+    	values.put(KEY_DESC, l.getDescription());
+    	
+    	return mDb.insert(DATABASE_TABLE, null, values);
+    	
+    }
+    
+    public boolean removeSelection(long id)
+    {
+    	return mDb.delete(DATABASE_TABLE, KEY_ROWID + "=" + id, null) > 0;
     }
 }
