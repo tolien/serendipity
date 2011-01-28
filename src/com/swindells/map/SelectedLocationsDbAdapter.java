@@ -2,6 +2,7 @@ package com.swindells.map;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -85,5 +86,16 @@ public class SelectedLocationsDbAdapter
     public boolean removeSelection(long id)
     {
     	return mDb.delete(DATABASE_TABLE, KEY_ROWID + "=" + id, null) > 0;
+    }
+    
+    public Cursor fetchAll()
+    {
+    	String[] columns = { KEY_ROWID, KEY_LATITUDE, KEY_LONGITUDE, KEY_NAME, KEY_DESC };
+    	return mDb.query(DATABASE_TABLE, columns, null, null, null, null, null);
+    }
+    
+    public boolean removeAll()
+    {
+    	return mDb.delete(DATABASE_TABLE, "1", null) > 0;
     }
 }
