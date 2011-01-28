@@ -10,4 +10,5 @@
 	<string name="add_decline">No</string>
 	<string name="bubble_tap_instruction">Tap to view more options</string>
 	<string name="menu_start_service">Go</string>
+	<string name="menu_stop_service">Stop</string>
 </resources>
