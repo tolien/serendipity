@@ -103,7 +103,7 @@ public class VisitableList extends ItemizedOverlay<OverlayItem>
 				public void onClick(View v) {
 					hide();
 					
-			        ac.startActivityForResult(addIntent, MapDemo.ACTIVITY_ADD);
+			        ac.startActivityForResult(addIntent, MapInput.ACTIVITY_ADD);
 				}
 			});
 		}

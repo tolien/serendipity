@@ -47,7 +47,7 @@ public class SerendipitousService extends Service
 		Notification notification = new Notification(icon, tickerText, when);
 		notification.flags = Notification.FLAG_ONGOING_EVENT;
 		
-		PendingIntent launchIntent = PendingIntent.getActivity(getApplicationContext(), 0, new Intent(SerendipitousService.this, MapDemo.class), 0);
+		PendingIntent launchIntent = PendingIntent.getActivity(getApplicationContext(), 0, new Intent(SerendipitousService.this, MapInput.class), 0);
 		notification.setLatestEventInfo(getApplicationContext(), (CharSequence) tickerText, (CharSequence) "", launchIntent);
 		
 		notificationManager.notify(1, notification);

@@ -14,7 +14,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class MapDemo extends MapActivity implements Observer
+public class MapInput extends MapActivity implements Observer
 {
 	private static final int GO_ID = Menu.FIRST;
 	private static final int CENTER_ID = Menu.FIRST + 1;
