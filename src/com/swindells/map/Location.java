@@ -32,4 +32,10 @@ public class Location
 	{
 		return description;
 	}
+	
+	public void setText(String title, String desc)
+	{
+		this.title = title;
+		this.description = desc;
+	}
 }
