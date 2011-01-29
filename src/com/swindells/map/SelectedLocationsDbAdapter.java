@@ -18,16 +18,19 @@ public class SelectedLocationsDbAdapter
     
     public static final String TAG = "SelectedDbAdapater";
 
+    private static final String DATABASE_NAME = "data";
+    private static final String DATABASE_TABLE = "locations";
+    private static final int DATABASE_VERSION = 4;
+
     /**
      * Database creation sql statement
      */
     private static final String DATABASE_CREATE =
-        "create table locations (_id integer primary key autoincrement, "
-        + "title text not null, body text not null, latitude integer not null, longitude integer not null);";
-
-    private static final String DATABASE_NAME = "data";
-    private static final String DATABASE_TABLE = "locations";
-    private static final int DATABASE_VERSION = 2;
+        "create table " + DATABASE_TABLE + "(" + KEY_ROWID + " integer primary key autoincrement, "
+        + KEY_NAME + " text not null, "
+        + KEY_DESC + " text not null, "
+        + KEY_LATITUDE + " integer not null, "
+        + KEY_LONGITUDE + " integer not null);";
     
     private Context mCtx;
     private DatabaseHelper mDbHelper;
@@ -49,7 +52,7 @@ public class SelectedLocationsDbAdapter
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
             Log.w(TAG, "Upgrading database from version " + oldVersion + " to "
                     + newVersion + ", which will destroy all old data");
-            db.execSQL("DROP TABLE IF EXISTS notes");
+            db.execSQL("DROP TABLE IF EXISTS " + DATABASE_TABLE);
             onCreate(db);
         }
     }
