@@ -10,7 +10,7 @@ public class Location
 	
 	public Location(int lat, int lng)
 	{
-		location = new GeoPoint((int) (lat * 1E6), (int) (lng * 1E6));
+		location = new GeoPoint(lat, lng);
 	}
 	
 	public int getLatitude()
