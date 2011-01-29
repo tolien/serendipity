@@ -17,6 +17,7 @@ import android.view.MenuItem;
 public class MapInput extends MapActivity implements Observer
 {
 	private static final int GO_ID = Menu.FIRST;
+	private static final int STOP_ID = Menu.FIRST;
 	private static final int CENTER_ID = Menu.FIRST + 1;
 	
 	public static final int ACTIVITY_ADD = 0;
@@ -28,6 +29,8 @@ public class MapInput extends MapActivity implements Observer
 	private LocationObservable myLocationListener;
 	
 	private boolean starting;
+
+	private boolean serviceRunning;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -136,8 +139,30 @@ public class MapInput extends MapActivity implements Observer
 	{
 		super.onCreateOptionsMenu(menu);
 		menu.add(0, CENTER_ID, 0, R.string.menu_map_center);
-		menu.add(0, GO_ID, 1, R.string.menu_start_service);
+
 		return true;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.app.Activity#onPrepareOptionsMenu(android.view.Menu)
+	 */
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu)
+	{
+		if (!serviceRunning)
+		{
+			menu.removeItem(GO_ID);
+			menu.add(0, GO_ID, 1, R.string.menu_start_service);
+		}
+		else
+		{
+			menu.removeItem(GO_ID);
+			menu.add(0, STOP_ID, 1, R.string.menu_stop_service);
+		}
+
+		return super.onPrepareOptionsMenu(menu);
 	}
 
 	@Override
@@ -150,9 +175,15 @@ public class MapInput extends MapActivity implements Observer
 					.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 			updateLocation(lastKnownLocation);
 		}
-		else if (id == GO_ID)
+		else if (id == GO_ID && !serviceRunning)
 		{
 			startService(new Intent(this, SerendipitousService.class));
+			serviceRunning = true;
+		}
+		else if (id == STOP_ID && serviceRunning)
+		{
+			stopService(new Intent(this, SerendipitousService.class));
+			serviceRunning = false;
 		}
 		return super.onMenuItemSelected(featureId, item);
 	}
