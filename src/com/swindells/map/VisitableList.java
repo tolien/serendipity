@@ -98,6 +98,8 @@ public class VisitableList extends ItemizedOverlay<OverlayItem>
 			final Intent addIntent = new Intent(ac, AddLocation.class);
 			addIntent.putExtra(SelectedLocationsDbAdapter.KEY_NAME, oi.getTitle());
 			addIntent.putExtra(SelectedLocationsDbAdapter.KEY_DESC, oi.getSnippet());
+			addIntent.putExtra(SelectedLocationsDbAdapter.KEY_LATITUDE, oi.getPoint().getLatitudeE6());
+			addIntent.putExtra(SelectedLocationsDbAdapter.KEY_LONGITUDE, oi.getPoint().getLongitudeE6());
 			
 			popup.setOnClickListener(new View.OnClickListener() {
 				public void onClick(View v) {
