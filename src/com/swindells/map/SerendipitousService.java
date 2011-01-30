@@ -94,6 +94,7 @@ public class SerendipitousService extends Service
 	public void shutDown()
 	{
 		notificationManager.cancelAll();
+		db.removeAll();
 		db.close();
 	}
 
