@@ -1,8 +1,6 @@
 package com.swindells.map;
 
-import java.util.HashMap;
-
-import com.google.android.maps.GeoPoint;
+import java.util.ArrayList;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -10,12 +8,15 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.IBinder;
 
 public class SerendipitousService extends Service
 {
 	private NotificationManager notificationManager;
-	private HashMap<GeoPoint, String> locations = new HashMap<GeoPoint, String>();
+	private ArrayList<Location> locations = new ArrayList<Location>();
+	
+	private SelectedLocationsDbAdapter db;
 	
 	/* (non-Javadoc)
 	 * @see android.app.Service#onCreate()
@@ -23,7 +24,39 @@ public class SerendipitousService extends Service
 	@Override
 	public void onCreate()
 	{
-		showNotification();
+		db = new SelectedLocationsDbAdapter(this);
+		db.open();
+		Cursor c = db.fetchAll();
+		
+		String svcName = Context.NOTIFICATION_SERVICE;
+		notificationManager = (NotificationManager) getSystemService(svcName);
+		
+		if (c.getCount() > 0)
+		{
+			c.moveToFirst();
+			while (!c.isAfterLast())
+			{
+				int latIdx = c.getColumnIndex(SelectedLocationsDbAdapter.KEY_LATITUDE);
+				int lat = c.getInt(latIdx);
+				int lngIdx = c.getColumnIndex(SelectedLocationsDbAdapter.KEY_LONGITUDE);
+				int lng = c.getInt(lngIdx);
+				
+				String name = c.getString(c.getColumnIndex(SelectedLocationsDbAdapter.KEY_NAME));
+				String desc = c.getString(c.getColumnIndex(SelectedLocationsDbAdapter.KEY_DESC));
+				
+				Location l = new Location(lat, lng);
+				l.setText(name, desc);
+				locations.add(l);
+				
+				c.moveToNext();
+			}
+			showNotification();			
+		}
+		else
+		{
+			shutDown();
+			stopSelf();
+		}
 	}
 
 	/* (non-Javadoc)
@@ -37,11 +70,8 @@ public class SerendipitousService extends Service
 
 	public void showNotification()
 	{
-		String svcName = Context.NOTIFICATION_SERVICE;
-		notificationManager = (NotificationManager) getSystemService(svcName);
-		
 		int icon = R.drawable.marker;
-		String tickerText = "Guide Service started";
+		String tickerText = getString(R.string.service_started_notification_text);
 		long when = System.currentTimeMillis();
 		
 		Notification notification = new Notification(icon, tickerText, when);
@@ -59,6 +89,21 @@ public class SerendipitousService extends Service
 	{
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	public void shutDown()
+	{
+		notificationManager.cancelAll();
+		db.close();
+	}
+
+	/* (non-Javadoc)
+	 * @see android.app.Service#onDestroy()
+	 */
+	@Override
+	public void onDestroy()
+	{
+		shutDown();
 	}
 
 }
