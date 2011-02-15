@@ -31,6 +31,8 @@ public class MapInput extends MapActivity implements Observer
 	private boolean starting;
 
 	private boolean serviceRunning;
+	
+	private int zoomLevel = 20;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -53,6 +55,7 @@ public class MapInput extends MapActivity implements Observer
 				myMapView);
 		overlays.add(myLocationOverlay);
 		myMapView.setBuiltInZoomControls(true);
+		mapController.setZoom(zoomLevel);
 
 		String serviceString = Context.LOCATION_SERVICE;
 		locationManager = (LocationManager) getSystemService(serviceString);
@@ -106,6 +109,7 @@ public class MapInput extends MapActivity implements Observer
 	protected void onDestroy()
 	{
 		locationManager.removeUpdates(myLocationListener);
+		zoomLevel = ((MapView) findViewById(R.id.myMapView)).getZoomLevel();
 		super.onDestroy();
 	}
 
@@ -118,6 +122,7 @@ public class MapInput extends MapActivity implements Observer
 	protected void onPause()
 	{
 		locationManager.removeUpdates(myLocationListener);
+		zoomLevel = ((MapView) findViewById(R.id.myMapView)).getZoomLevel();
 		super.onPause();
 	}
 
