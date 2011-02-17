@@ -81,7 +81,6 @@ public class SerendipitousService extends Service
 		notification.setLatestEventInfo(getApplicationContext(), (CharSequence) tickerText, (CharSequence) "", launchIntent);
 		
 		notificationManager.notify(1, notification);
-		
 	}
 
 	@Override
