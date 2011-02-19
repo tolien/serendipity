@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+  xmlns:android="http://schemas.android.com/apk/res/android">
+  
+  <PreferenceCategory android:title="Notify on...">
+    <CheckBoxPreference
+    android:key="notify_approach"
+    android:title="Getting closer"
+    android:summary="Notify moving towards a location" />
+    
+    <CheckBoxPreference
+    android:key="notify_leave"
+    android:title="Moving away"
+    android:summary="Notify moving away from a location" />
+  </PreferenceCategory>
+</PreferenceScreen>

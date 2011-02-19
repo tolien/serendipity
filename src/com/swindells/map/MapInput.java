@@ -19,6 +19,7 @@ public class MapInput extends MapActivity implements Observer
 	private static final int GO_ID = Menu.FIRST;
 	private static final int STOP_ID = Menu.FIRST;
 	private static final int CENTER_ID = Menu.FIRST + 1;
+	private static final int OPTIONS_ID = Menu.FIRST + 2;
 	
 	public static final int ACTIVITY_ADD = 0;
 
@@ -144,6 +145,7 @@ public class MapInput extends MapActivity implements Observer
 	{
 		super.onCreateOptionsMenu(menu);
 		menu.add(0, CENTER_ID, 0, R.string.menu_map_center);
+		menu.add(0, OPTIONS_ID, 0, R.string.options).setIcon(android.R.drawable.ic_menu_preferences);
 
 		return true;
 	}
@@ -189,6 +191,11 @@ public class MapInput extends MapActivity implements Observer
 		{
 			stopService(new Intent(this, SerendipitousService.class));
 			serviceRunning = false;
+		}
+		else if (id == OPTIONS_ID)
+		{
+			Intent i = new Intent(this, Preferences.class);
+			startActivity(i);
 		}
 		return super.onMenuItemSelected(featureId, item);
 	}

@@ -21,6 +21,8 @@
 				<data android:host="com.swindells.map" />
 			</intent-filter>
 		</activity>
+		
+		<activity android:name=".Preferences"></activity>
 
 <service android:name=".SerendipitousService"></service>
 </application>
