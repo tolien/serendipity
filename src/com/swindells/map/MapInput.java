@@ -161,12 +161,12 @@ public class MapInput extends MapActivity implements Observer
 		if (!serviceRunning)
 		{
 			menu.removeItem(GO_ID);
-			menu.add(0, GO_ID, 1, R.string.menu_start_service);
+			menu.add(0, GO_ID, 1, R.string.menu_start_service).setIcon(android.R.drawable.ic_media_play);
 		}
 		else
 		{
 			menu.removeItem(GO_ID);
-			menu.add(0, STOP_ID, 1, R.string.menu_stop_service);
+			menu.add(0, STOP_ID, 1, R.string.menu_stop_service).setIcon(android.R.drawable.ic_media_pause);
 		}
 
 		return super.onPrepareOptionsMenu(menu);
