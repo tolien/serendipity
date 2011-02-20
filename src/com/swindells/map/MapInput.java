@@ -144,7 +144,7 @@ public class MapInput extends MapActivity implements Observer
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
 		super.onCreateOptionsMenu(menu);
-		menu.add(0, CENTER_ID, 0, R.string.menu_map_center);
+		menu.add(0, CENTER_ID, 0, R.string.menu_map_center).setIcon(android.R.drawable.ic_menu_compass);
 		menu.add(0, OPTIONS_ID, 0, R.string.options).setIcon(android.R.drawable.ic_menu_preferences);
 
 		return true;
