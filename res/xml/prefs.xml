@@ -1,16 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen
   xmlns:android="http://schemas.android.com/apk/res/android">
-  
-  <PreferenceCategory android:title="Notify on...">
+  <PreferenceCategory android:title="Notifications">
     <CheckBoxPreference
     android:key="notify_approach"
     android:title="Getting closer"
-    android:summary="Notify moving towards a location" />
+    android:summary="Notify moving towards a location" 
+    android:defaultValue="true"
+    />
     
     <CheckBoxPreference
     android:key="notify_leave"
     android:title="Moving away"
-    android:summary="Notify moving away from a location" />
-  </PreferenceCategory>
+    android:summary="Notify moving away from a location"
+    android:defaultValue="false" />
+    
+    <EditTextPreference android:key="notify_range"
+    android:title="Distance"
+    android:summary="Distance in metres"
+    android:defaultValue="100"
+    android:dialogTitle="Distance"
+    android:digits="0123456789"
+    android:inputType="number"
+    />
+    </PreferenceCategory>
 </PreferenceScreen>
