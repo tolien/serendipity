@@ -8,13 +8,17 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.database.Cursor;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 
-public class SerendipitousService extends Service
+public class SerendipitousService extends Service implements OnSharedPreferenceChangeListener
 {
 	private NotificationManager notificationManager;
 	private ArrayList<Location> locations = new ArrayList<Location>();
+	private SharedPreferences prefs;
 	
 	private SelectedLocationsDbAdapter db;
 	
@@ -27,6 +31,9 @@ public class SerendipitousService extends Service
 		db = new SelectedLocationsDbAdapter(this);
 		db.open();
 		Cursor c = db.fetchAll();
+		prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		
+		int range = prefs.getInt("notify_range", 25);
 		
 		String svcName = Context.NOTIFICATION_SERVICE;
 		notificationManager = (NotificationManager) getSystemService(svcName);
@@ -104,6 +111,14 @@ public class SerendipitousService extends Service
 	public void onDestroy()
 	{
 		shutDown();
+	}
+
+	@Override
+	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
+			String key)
+	{
+		prefs = sharedPreferences;
+		
 	}
 
 }
