@@ -22,7 +22,8 @@
 			</intent-filter>
 		</activity>
 		
-		<activity android:name=".Preferences"></activity>
+		<activity android:name=".Preferences" android:label="Settings">
+		</activity>
 
 <service android:name=".SerendipitousService"></service>
 </application>
