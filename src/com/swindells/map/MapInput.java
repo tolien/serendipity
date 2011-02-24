@@ -6,10 +6,12 @@ import java.util.Observer;
 
 import com.google.android.maps.*;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,6 +22,8 @@ public class MapInput extends MapActivity implements Observer
 	private static final int STOP_ID = Menu.FIRST;
 	private static final int CENTER_ID = Menu.FIRST + 1;
 	private static final int OPTIONS_ID = Menu.FIRST + 2;
+	
+	private static final int SCAN_ID = Menu.FIRST + 3;
 	
 	public static final int ACTIVITY_ADD = 0;
 
@@ -146,7 +150,6 @@ public class MapInput extends MapActivity implements Observer
 		super.onCreateOptionsMenu(menu);
 		menu.add(0, CENTER_ID, 0, R.string.menu_map_center).setIcon(android.R.drawable.ic_menu_compass);
 		menu.add(0, OPTIONS_ID, 0, R.string.options).setIcon(android.R.drawable.ic_menu_preferences);
-
 		return true;
 	}
 
@@ -168,6 +171,11 @@ public class MapInput extends MapActivity implements Observer
 			menu.removeItem(GO_ID);
 			menu.add(0, STOP_ID, 1, R.string.menu_stop_service).setIcon(android.R.drawable.ic_media_pause);
 		}
+	
+		final android.content.pm.PackageManager packageManager = getPackageManager();
+		Intent intent = new Intent("com.google.zxing.client.android.SCAN");
+		if (packageManager.queryIntentActivities(intent, android.content.pm.PackageManager.MATCH_DEFAULT_ONLY).size() > 0)
+			menu.add(0, SCAN_ID, 0, R.string.menu_scan).setIcon(R.drawable.qrcode);
 
 		return super.onPrepareOptionsMenu(menu);
 	}
@@ -197,7 +205,36 @@ public class MapInput extends MapActivity implements Observer
 			Intent i = new Intent(this, Preferences.class);
 			startActivity(i);
 		}
+		else if (id == SCAN_ID)
+		{
+			Intent intent = new Intent("com.google.zxing.client.android.SCAN");
+			intent.setPackage("com.google.zxing.client.android");
+			intent.putExtra("SCAN_MODE", "QR_CODE_MODE");
+			
+			startActivityForResult(intent, 0);
+		}
 		return super.onMenuItemSelected(featureId, item);
+	}
+
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onActivityResult(int, int, android.content.Intent)
+	 */
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data)
+	{
+		if (requestCode == 0)
+		{
+			if (resultCode == RESULT_OK)
+			{
+				String content = data.getStringExtra("SCAN_RESULT");
+				String format = data.getStringExtra("SCAN_RESULT_FORMAT");
+				
+				String action = "com.swindells.map.QRInput";
+				Uri u = Uri.parse(content);
+				Intent intent = new Intent(action, u);
+				startActivity(intent);
+			}
+		}
 	}
 
 	@Override

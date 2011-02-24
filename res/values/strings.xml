@@ -14,4 +14,6 @@
 	<string name="service_started_notification_text">Serendipitous Guide Service started</string>
 	
 	<string name="options">Options</string>
+	
+	<string name="menu_scan">Scan barcode</string>
 </resources>
