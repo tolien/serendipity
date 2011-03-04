@@ -56,9 +56,9 @@ public class MapInput extends MapActivity implements Observer
 		myMapView.setSatellite(false);
 		myMapView.postInvalidate();
 
-		MyLocationOverlay myLocationOverlay = new MyLocationOverlay(this,
+		MyLocationOverlay currentLocationOverlay = new MyLocationOverlay(this,
 				myMapView);
-		overlays.add(myLocationOverlay);
+		overlays.add(currentLocationOverlay);
 		myMapView.setBuiltInZoomControls(true);
 		mapController.setZoom(zoomLevel);
 
