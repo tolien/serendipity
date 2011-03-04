@@ -24,4 +24,17 @@
     android:inputType="number"
     />
     </PreferenceCategory>
+    
+    <PreferenceCategory android:title="Notify with:">
+    	<CheckBoxPreference
+    	android:key="notify_vibration"
+    	android:title="Vibration"
+    	android:defaultValue="true"
+    	/>
+    	<CheckBoxPreference
+    	android:key="notify_audible"
+    	android:title="Sound"
+    	android:defaultValue="false"
+    	/>
+    </PreferenceCategory>
 </PreferenceScreen>
