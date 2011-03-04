@@ -1,5 +1,7 @@
 package com.swindells.map;
 
+import java.util.regex.Pattern;
+
 import com.google.android.maps.GeoPoint;
 
 import android.app.Activity;
@@ -59,6 +61,7 @@ public class AddLocation extends Activity
 		{
 			String lat = uri.getQueryParameter("lat");
 			String lng = uri.getQueryParameter("lng");
+			String name = uri.getQueryParameter("name");
 			
 			if (lat != null && lng != null) 
 			{
@@ -66,10 +69,33 @@ public class AddLocation extends Activity
 				latitude = (int) (Double.parseDouble(lat) * 1E6);
 				longitude = (int) (Double.parseDouble(lng) * 1E6);
 				
-				AlertDialog.Builder ad = new AlertDialog.Builder(this);
+				if (name != null)
+				{
+					name = name.replaceAll(Pattern.quote("+"), " ");
+					
+					TextView title = (TextView) findViewById(R.id.locationName);
+					title.setText(name);
+				}
+				
+				final Location l = new Location(latitude, longitude);
+				l.setText(name, null);
+				
+				final Button yesButton = (Button) findViewById(R.id.add_confirm);
+				yesButton.setOnClickListener(new View.OnClickListener()
+				{
+					@Override
+					public void onClick(View v)
+					{
+						mdbHelper.addSelection(l);
+						finish();
+					}
+				});
+				
+			/*	AlertDialog.Builder ad = new AlertDialog.Builder(this);
 				ad.setTitle("Scanned");
-				ad.setMessage("Scanned barcode. \nLatitude: " + latitude + ",\nLongitude: " + longitude);
+				ad.setMessage("Scanned barcode for " + name + ". \nLatitude: " + latitude + ",\nLongitude: " + longitude);
 				ad.show();
+			*/
 			}
 			else
 			{
