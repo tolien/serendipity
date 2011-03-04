@@ -172,6 +172,7 @@ public class MapInput extends MapActivity implements Observer
 			menu.add(0, STOP_ID, 1, R.string.menu_stop_service).setIcon(android.R.drawable.ic_media_pause);
 		}
 	
+		menu.removeItem(SCAN_ID);
 		final android.content.pm.PackageManager packageManager = getPackageManager();
 		Intent intent = new Intent("com.google.zxing.client.android.SCAN");
 		if (packageManager.queryIntentActivities(intent, android.content.pm.PackageManager.MATCH_DEFAULT_ONLY).size() > 0)
