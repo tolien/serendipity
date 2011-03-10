@@ -18,9 +18,9 @@ public class SelectedLocationsDbAdapter
     
     public static final String TAG = "SelectedDbAdapater";
 
-    private static final String DATABASE_NAME = "data";
-    private static final String DATABASE_TABLE = "locations";
-    private static final int DATABASE_VERSION = 4;
+    private static final String DATABASE_NAME = "selectiondata";
+    private static final String DATABASE_TABLE = "selections";
+    private static final int DATABASE_VERSION = 1;
 
     /**
      * Database creation sql statement
@@ -28,7 +28,7 @@ public class SelectedLocationsDbAdapter
     private static final String DATABASE_CREATE =
         "create table " + DATABASE_TABLE + "(" + KEY_ROWID + " integer primary key autoincrement, "
         + KEY_NAME + " text not null, "
-        + KEY_DESC + " text not null, "
+        + KEY_DESC + " text, "
         + KEY_LATITUDE + " integer not null, "
         + KEY_LONGITUDE + " integer not null);";
     
