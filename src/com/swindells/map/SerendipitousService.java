@@ -9,6 +9,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.database.Cursor;
 import android.os.IBinder;
@@ -16,6 +17,8 @@ import android.preference.PreferenceManager;
 
 public class SerendipitousService extends Service implements OnSharedPreferenceChangeListener
 {
+	public static String RUNNINGPREF = "ServiceRunning";
+	
 	private NotificationManager notificationManager;
 	private ArrayList<Location> locations = new ArrayList<Location>();
 	private SharedPreferences prefs;
@@ -57,7 +60,10 @@ public class SerendipitousService extends Service implements OnSharedPreferenceC
 				
 				c.moveToNext();
 			}
-			showNotification();			
+			showNotification();
+			Editor e = prefs.edit();
+			e.putBoolean(RUNNINGPREF, true);
+			e.commit();
 		}
 		else
 		{
@@ -100,8 +106,13 @@ public class SerendipitousService extends Service implements OnSharedPreferenceC
 	public void shutDown()
 	{
 		notificationManager.cancelAll();
+		db.open();
 		db.removeAll();
 		db.close();
+		
+		Editor e = prefs.edit();
+		e.putBoolean("ServiceRunning", false);
+		e.commit();
 	}
 
 	/* (non-Javadoc)
