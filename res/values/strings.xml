@@ -3,7 +3,7 @@
 	<string name="app_name">Serendipitous City Guide</string>
 	<string name="no_locations">No Locations Yet</string>
 	<string name="menu_loc_clear">Clear selections</string>
-	<string name="menu_map_center">Go to current location</string>
+	<string name="menu_map_center">Current location</string>
 	<string name="addloc_question">Add this location to the list you want to visit?</string>
 	<string name="no_location_given">No Location</string>
 	<string name="add_confirm">Yes</string>
@@ -15,5 +15,5 @@
 	
 	<string name="options">Options</string>
 	
-	<string name="menu_scan">Scan barcode</string>
+	<string name="menu_scan">Scan a barcode</string>
 </resources>
