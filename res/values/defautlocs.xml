@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<array name="latitude">
+		<item>55.86215</item>
+		<item>55.85975</item>
+		<item>55.86120</item>
+		<item>55.86429</item>
+		<item>55.86000</item>
+		<item>55.86015</item>
+		<item>55.86308</item>
+	</array>
+	<array name="longitude">
+		<item>-4.25229</item>
+		<item>-4.25764</item>
+		<item>-4.25011</item>
+		<item>-4.25271</item>
+		<item>-4.25690</item>
+		<item>-4.25236</item>
+		<item>-4.25292</item>
+	</array>
+	<array name="name">
+		<item>Queen Street Station</item>
+		<item>Central Station</item>
+		<item>George Square</item>
+		<item>Glasgow Royal Concert Hall</item>
+		<item>Caffe Nero Union Street</item>
+		<item>Gallery of Modern Art</item>
+		<item>Buchanan Galleries</item>
+	</array>
+</resources>
