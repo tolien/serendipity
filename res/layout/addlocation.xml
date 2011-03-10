@@ -3,11 +3,14 @@
 	android:layout_height="fill_parent" android:layout_width="fill_parent">
 
 	<TextView android:id="@+id/locationQuestion" android:text="@string/addloc_question"
-		android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginBottom="160dp" />
+		android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginBottom="160dp" android:textSize="24sp" android:gravity="center" android:textStyle="bold"/>
 
-	<TextView android:id="@+id/locationName" android:layout_width="wrap_content"
+	<TextView android:id="@+id/locationName" android:layout_width="fill_parent"
 		android:layout_height="wrap_content" android:text="@string/no_location_given"
-		android:textStyle="bold" android:layout_below="@id/locationQuestion" />
+		android:textStyle="bold" android:layout_below="@id/locationQuestion" android:textSize="20sp" android:gravity="center"/>
+		
+	<TextView android:id="@+id/locationDesc" android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:layout_below="@id/locationName" android:textSize="14sp"/>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_height="wrap_content" android:layout_width="fill_parent"
@@ -15,10 +18,10 @@
 	
 	<Button android:text="@string/add_confirm"
 		android:layout_height="wrap_content" android:id="@+id/add_confirm"
-		android:layout_width="wrap_content" android:layout_alignParentBottom="true" android:layout_alignParentLeft="true" />
+		android:layout_width="wrap_content" android:layout_alignParentBottom="true" android:layout_alignParentLeft="true" android:textSize="16sp"  />
 
 	<Button android:id="@+id/add_decline" android:text="@string/add_decline"
 		android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_toRightOf="@id/add_confirm"
-		android:layout_alignParentBottom="true" />
+		android:layout_alignParentBottom="true" android:textSize="16sp" />
 </RelativeLayout>
 </RelativeLayout>
