@@ -35,13 +35,16 @@ public class AddLocation extends Activity
 		{
 			setContentView(R.layout.addlocation);
 			TextView title = (TextView) findViewById(R.id.locationName);
+			TextView more = (TextView) findViewById(R.id.locationName);
 			
 			String name = extras.getString(SelectedLocationsDbAdapter.KEY_NAME);
 			String desc = extras.getString(SelectedLocationsDbAdapter.KEY_DESC);
 			
 			latitude = extras.getInt(SelectedLocationsDbAdapter.KEY_LATITUDE);
 			longitude = extras.getInt(SelectedLocationsDbAdapter.KEY_LONGITUDE);
-			title.setText(desc);
+			title.setText(name);
+			if (desc != null)
+				more.setText(desc);
 			
 			final Location l = new Location(latitude, longitude);
 			l.setText(name, desc);
@@ -63,19 +66,16 @@ public class AddLocation extends Activity
 			String lng = uri.getQueryParameter("lng");
 			String name = uri.getQueryParameter("name");
 			
-			if (lat != null && lng != null) 
+			if (lat != null && lng != null && name != null) 
 			{
 				setContentView(R.layout.addlocation);
 				latitude = (int) (Double.parseDouble(lat) * 1E6);
 				longitude = (int) (Double.parseDouble(lng) * 1E6);
 				
-				if (name != null)
-				{
-					name = name.replaceAll(Pattern.quote("+"), " ");
-					
-					TextView title = (TextView) findViewById(R.id.locationName);
-					title.setText(name);
-				}
+				name = name.replaceAll(Pattern.quote("+"), " ");
+				
+				TextView title = (TextView) findViewById(R.id.locationName);
+				title.setText(name);
 				
 				final Location l = new Location(latitude, longitude);
 				l.setText(name, null);
@@ -90,12 +90,6 @@ public class AddLocation extends Activity
 						finish();
 					}
 				});
-				
-			/*	AlertDialog.Builder ad = new AlertDialog.Builder(this);
-				ad.setTitle("Scanned");
-				ad.setMessage("Scanned barcode for " + name + ". \nLatitude: " + latitude + ",\nLongitude: " + longitude);
-				ad.show();
-			*/
 			}
 			else
 			{
