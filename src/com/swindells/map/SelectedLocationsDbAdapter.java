@@ -101,4 +101,10 @@ public class SelectedLocationsDbAdapter
     {
     	return mDb.delete(DATABASE_TABLE, "1", null) > 0;
     }
+    
+    public int count()
+    {
+    	Cursor c = fetchAll();
+    	return c.getCount();
+    }
 }
