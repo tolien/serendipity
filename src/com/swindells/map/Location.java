@@ -38,4 +38,9 @@ public class Location
 		this.title = title;
 		this.description = desc;
 	}
+	
+	public String toString()
+	{
+		return getTitle() + " at (" + getLatitude() + ", " + getLongitude() + ")";
+	}
 }
