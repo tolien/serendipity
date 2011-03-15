@@ -60,10 +60,11 @@ public class SelectedLocationsDbAdapter
     public SelectedLocationsDbAdapter(Context ctx)
     {
     	mCtx = ctx;
+    	open();
     }
     
 
-    public SelectedLocationsDbAdapter open() throws SQLException {
+    private SelectedLocationsDbAdapter open() throws SQLException {
         mDbHelper = new DatabaseHelper(mCtx);
         mDb = mDbHelper.getWritableDatabase();
         return this;
@@ -106,5 +107,16 @@ public class SelectedLocationsDbAdapter
     {
     	Cursor c = fetchAll();
     	return c.getCount();
+    }
+    
+    public Cursor fetch(int id)
+    {
+    	String[] columns = { KEY_ROWID, KEY_LATITUDE, KEY_LONGITUDE, KEY_NAME, KEY_DESC };
+    	return mDb.query(DATABASE_TABLE, columns, KEY_ROWID + " = " + id, null, null, null, null);
+    }
+    
+    public boolean remove(int id)
+    {
+    	return mDb.delete(DATABASE_TABLE, KEY_ROWID + " = " + id , null) == 1;
     }
 }
