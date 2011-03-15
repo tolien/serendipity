@@ -61,6 +61,7 @@ public class LocationDbAdapter
     public LocationDbAdapter(Context ctx)
     {
     	mCtx = ctx;
+    	this.open();
     }
     
 
