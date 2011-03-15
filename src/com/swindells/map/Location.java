@@ -4,23 +4,25 @@ import com.google.android.maps.GeoPoint;
 
 public class Location
 {
-	private GeoPoint location;
+	private android.location.Location location;
 	private String title = null;
 	private String description = null;
 	
 	public Location(int lat, int lng)
 	{
-		location = new GeoPoint(lat, lng);
+		location = new android.location.Location("");
+		location.setLatitude(lat / 1E6);
+		location.setLongitude(lng / 1E6);
 	}
 	
 	public int getLatitude()
 	{
-		return location.getLatitudeE6();
+		return (int) (location.getLatitude() * 1E6);
 	}
 	
 	public int getLongitude()
 	{
-		return location.getLongitudeE6();
+		return (int) (location.getLongitude() * 1E6);
 	}
 	
 	public String getTitle()
@@ -42,5 +44,10 @@ public class Location
 	public String toString()
 	{
 		return getTitle() + " at (" + getLatitude() + ", " + getLongitude() + ")";
+	}
+	
+	public float distanceTo(android.location.Location l)
+	{
+		return location.distanceTo(l);
 	}
 }
