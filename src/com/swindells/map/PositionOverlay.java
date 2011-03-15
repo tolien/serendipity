@@ -23,7 +23,7 @@ public class PositionOverlay extends Overlay
 		{
 			Projection projection = mapView.getProjection();
 			float accuracy = location.getAccuracy();
-			accuracy = projection.metersToEquatorPixels(accuracy);
+			accuracy = 3 * projection.metersToEquatorPixels(accuracy);
 			
 			Double lat = location.getLatitude() * 1E6;
 			Double lon = location.getLongitude() * 1E6;
@@ -36,7 +36,7 @@ public class PositionOverlay extends Overlay
 			paint.setARGB(50, 0, 0, 0);
 			paint.setAntiAlias(true);
 			
-			canvas.drawCircle(point.x, point.y, accuracy, paint);
+			canvas.drawCircle(point.x, point.y, Math.max(20, accuracy), paint);
 		}
 	}
 	
