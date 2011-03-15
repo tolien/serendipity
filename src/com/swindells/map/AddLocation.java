@@ -21,7 +21,6 @@ public class AddLocation extends Activity
 	{
 		super.onCreate(savedInstanceState);
 		mdbHelper = new SelectedLocationsDbAdapter(this);
-		mdbHelper.open();
 
 
 		// mdbHelper = new LocationsDbAdapter(this);
