@@ -6,18 +6,22 @@ import java.util.Observer;
 
 import com.google.android.maps.*;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.database.Cursor;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
 
 public class MapInput extends MapActivity implements Observer
 {
+	
 	private static final int GO_ID = Menu.FIRST;
 	private static final int STOP_ID = Menu.FIRST;
 	private static final int CENTER_ID = Menu.FIRST + 1;
@@ -29,24 +33,29 @@ public class MapInput extends MapActivity implements Observer
 
 	private MapController mapController;
 	private PositionOverlay positionOverlay;
-
+	
+	private SharedPreferences prefs;
 	private LocationManager locationManager;
-	private LocationObservable myLocationListener;
 	
-	private boolean starting;
-
-	private boolean serviceRunning;
-	
-	private int zoomLevel = 20;
+	private int zoomLevel = 17;
 
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
+		String serviceString = Context.LOCATION_SERVICE;
+		locationManager = (LocationManager) getSystemService(serviceString);
+		
+		prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		super.onCreate(savedInstanceState);
 		
 		setContentView(R.layout.map);
+		
+		setUpMap();
+	}
 
+	private void setUpMap()
+	{
 		MapView myMapView = (MapView) findViewById(R.id.myMapView);
 		mapController = myMapView.getController();
 		List<Overlay> overlays = myMapView.getOverlays();
@@ -54,40 +63,52 @@ public class MapInput extends MapActivity implements Observer
 		positionOverlay = new PositionOverlay();
 		overlays.add(positionOverlay);
 		myMapView.setSatellite(false);
-		myMapView.postInvalidate();
-
-		MyLocationOverlay currentLocationOverlay = new MyLocationOverlay(this,
-				myMapView);
-		overlays.add(currentLocationOverlay);
+		
 		myMapView.setBuiltInZoomControls(true);
 		mapController.setZoom(zoomLevel);
+		
+		addVisitables(overlays);
+		
+		myMapView.postInvalidate();
+	}
 
-		String serviceString = Context.LOCATION_SERVICE;
-		locationManager = (LocationManager) getSystemService(serviceString);
-		myLocationListener = new LocationObservable();
-		myLocationListener.addObserver(this);
+	private void addVisitables(List<Overlay> overlayList)
+	{
+		VisitableList places = new VisitableList(getResources().getDrawable(
+				R.drawable.marker), this);
 
-		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-				120000, 100, myLocationListener);
 
 		Location lastKnownLocation = locationManager
 				.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 		updateLocation(lastKnownLocation);
-
-		VisitableList places = new VisitableList(getResources().getDrawable(
-				R.drawable.marker), this);
 		
-		if (lastKnownLocation != null)
+
+		LocationDbAdapter db = new LocationDbAdapter(this);
+		db.open();
+		Cursor c = db.fetchAll();
+		
+		if (c.getCount() > 0)
 		{
-			GeoPoint location = new GeoPoint(
-					(int) (lastKnownLocation.getLatitude() * 1E6),
-					(int) (lastKnownLocation.getLongitude() * 1E6));
-			String snippet = location.getLatitudeE6() + ", " + location.getLongitudeE6();
-			snippet += "\nLast known location at " + lastKnownLocation.getTime();
-			OverlayItem i = new OverlayItem(location, "Location", snippet);
-			places.addOverlay(i);
-			overlays.add(places);
+			c.moveToFirst();
+			
+			while (!c.isAfterLast())
+			{
+				int lat = c.getInt(c.getColumnIndex(LocationDbAdapter.KEY_LATITUDE));
+				int lng = c.getInt(c.getColumnIndex(LocationDbAdapter.KEY_LONGITUDE));
+				
+				String name = c.getString(c.getColumnIndex(LocationDbAdapter.KEY_NAME));
+				String desc = c.getString(c.getColumnIndex(LocationDbAdapter.KEY_DESC));
+				
+				GeoPoint location = new GeoPoint(lat, lng);
+				OverlayItem i = new OverlayItem(location, name, desc);
+				places.addOverlay(i);				
+				
+				c.moveToNext();
+			}
+			
+			overlayList.add(places);
 		}
+		
 	}
 
 	public void updateLocation(Location location)
@@ -95,12 +116,16 @@ public class MapInput extends MapActivity implements Observer
 		if (location != null)
 		{
 			positionOverlay.setLocation(location);
+
+			MapView myMapView = (MapView) findViewById(R.id.myMapView);
 			
-			if (!starting)
+			if (serviceRunning())
 			{
-				GeoPoint p = new GeoPoint((int) (location.getLatitude() * 1E6), (int) (location.getLongitude() * 1E6));
-				mapController.animateTo(p);
+				GeoPoint gp = new GeoPoint((int) (location.getLatitude() * 1E6), (int) (location.getLongitude() * 1E6));
+				mapController.animateTo(gp);
 			}
+			else
+				myMapView.postInvalidate();
 		}
 
 	}
@@ -113,7 +138,7 @@ public class MapInput extends MapActivity implements Observer
 	@Override
 	protected void onDestroy()
 	{
-		locationManager.removeUpdates(myLocationListener);
+		unsubscribe();
 		zoomLevel = ((MapView) findViewById(R.id.myMapView)).getZoomLevel();
 		super.onDestroy();
 	}
@@ -126,7 +151,7 @@ public class MapInput extends MapActivity implements Observer
 	@Override
 	protected void onPause()
 	{
-		locationManager.removeUpdates(myLocationListener);
+		unsubscribe();
 		zoomLevel = ((MapView) findViewById(R.id.myMapView)).getZoomLevel();
 		super.onPause();
 	}
@@ -139,8 +164,9 @@ public class MapInput extends MapActivity implements Observer
 	@Override
 	protected void onResume()
 	{
-		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-				120000, 100, myLocationListener);
+		subscribe();
+		//Toast t = Toast.makeText(this, "onResume" + " called", Toast.LENGTH_SHORT);
+		//t.show();
 		super.onResume();
 	}
 
@@ -150,6 +176,7 @@ public class MapInput extends MapActivity implements Observer
 		super.onCreateOptionsMenu(menu);
 		menu.add(0, CENTER_ID, 0, R.string.menu_map_center).setIcon(android.R.drawable.ic_menu_compass);
 		menu.add(0, OPTIONS_ID, 0, R.string.options).setIcon(android.R.drawable.ic_menu_preferences);
+		//menu.add(0, LIST_ID, 0, R.string.visitablelist);
 		return true;
 	}
 
@@ -161,10 +188,18 @@ public class MapInput extends MapActivity implements Observer
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu)
 	{
+		boolean serviceRunning = prefs.getBoolean(SerendipitousService.RUNNING_PREF, false);
+
+		SelectedLocationsDbAdapter sldba = new SelectedLocationsDbAdapter(this);
+		int c = sldba.count();
+		
 		if (!serviceRunning)
 		{
-			menu.removeItem(GO_ID);
-			menu.add(0, GO_ID, 1, R.string.menu_start_service).setIcon(android.R.drawable.ic_media_play);
+			if (c > 0)
+			{
+				menu.removeItem(GO_ID);
+				menu.add(0, GO_ID, 1, R.string.menu_start_service).setIcon(android.R.drawable.ic_media_play);
+			}
 		}
 		else
 		{
@@ -184,22 +219,33 @@ public class MapInput extends MapActivity implements Observer
 	@Override
 	public boolean onMenuItemSelected(int featureId, MenuItem item)
 	{
+		
 		int id = item.getItemId();
 		if (id == CENTER_ID)
 		{
+			
 			Location lastKnownLocation = locationManager
 					.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-			updateLocation(lastKnownLocation);
+			
+			if (lastKnownLocation != null)
+			{
+				updateLocation(lastKnownLocation);
+				
+				GeoPoint p = new GeoPoint((int) (lastKnownLocation.getLatitude() * 1E6), (int) (lastKnownLocation.getLongitude() * 1E6));
+				mapController.animateTo(p);
+			}
 		}
-		else if (id == GO_ID && !serviceRunning)
+		else if (id == GO_ID && !serviceRunning())
 		{
 			startService(new Intent(this, SerendipitousService.class));
-			serviceRunning = true;
 		}
-		else if (id == STOP_ID && serviceRunning)
+		else if (id == STOP_ID && serviceRunning())
 		{
 			stopService(new Intent(this, SerendipitousService.class));
-			serviceRunning = false;
+			
+			Editor e = prefs.edit();
+			e.putBoolean(SerendipitousService.RUNNING_PREF, false);
+			e.commit();
 		}
 		else if (id == OPTIONS_ID)
 		{
@@ -213,7 +259,12 @@ public class MapInput extends MapActivity implements Observer
 			intent.putExtra("SCAN_MODE", "QR_CODE_MODE");
 			
 			startActivityForResult(intent, 0);
-		}
+		}/*
+		else if (id == LIST_ID)
+		{
+			startActivity(new Intent(this, LocationList.class));
+		}*/
+		
 		return super.onMenuItemSelected(featureId, item);
 	}
 
@@ -228,7 +279,6 @@ public class MapInput extends MapActivity implements Observer
 			if (resultCode == RESULT_OK)
 			{
 				String content = data.getStringExtra("SCAN_RESULT");
-				String format = data.getStringExtra("SCAN_RESULT_FORMAT");
 				
 				String action = "com.swindells.map.QRInput";
 				Uri u = Uri.parse(content);
@@ -241,14 +291,36 @@ public class MapInput extends MapActivity implements Observer
 	@Override
 	protected boolean isRouteDisplayed()
 	{
-		// TODO Auto-generated method stub
 		return false;
+	}
+	
+	@Override
+	protected boolean isLocationDisplayed()
+	{
+		return true;
 	}
 
 	@Override
-	public void update(Observable arg0, Object arg1)
+	public void update(Observable observable, Object data)
 	{
-		updateLocation((Location) arg1);
+		updateLocation ((Location) data);		
+	}
+	
+	public void subscribe()
+	{
+		LocationNotifier lo = new NotifierFactory().setContext(this).getInstance();
+		lo.addObserver(this);
+	}
+	
+	public void unsubscribe()
+	{
+		LocationNotifier lo = new NotifierFactory().setContext(this).getInstance();
+		lo.deleteObserver(this);
+	}
+	
+	public boolean serviceRunning()
+	{
+		return prefs.getBoolean(SerendipitousService.RUNNING_PREF, false);
 	}
 
 }

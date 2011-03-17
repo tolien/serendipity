@@ -1,6 +1,8 @@
 package com.swindells.map;
 
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Observable;
+import java.util.Observer;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -14,13 +16,22 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.database.Cursor;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
+import android.widget.Toast;
 
-public class SerendipitousService extends Service implements OnSharedPreferenceChangeListener
+public class SerendipitousService extends Service implements OnSharedPreferenceChangeListener, Observer
 {
-	public static String RUNNINGPREF = "ServiceRunning";
+	public static String RUNNING_PREF = "ServiceRunning";
+	public static String PROXIMITY_ALERT = "com.swindells.map.ProximityAlert";
+	
+	private static int CHECK_EVERY = 30 * 1000;
+	
+	private static long[] DEFAULT_VIB = new long[] {500, 500, 500, 500, 500};
 	
 	private NotificationManager notificationManager;
-	private ArrayList<Location> locations = new ArrayList<Location>();
+	
+	private HashMap<Integer, Long> lastUpdate = new HashMap<Integer, Long>();
+	private HashMap<Integer, Float[]> distance = new HashMap<Integer, Float[]>();
 	private SharedPreferences prefs;
 	
 	private SelectedLocationsDbAdapter db;
@@ -32,38 +43,36 @@ public class SerendipitousService extends Service implements OnSharedPreferenceC
 	public void onCreate()
 	{
 		db = new SelectedLocationsDbAdapter(this);
-		db.open();
-		Cursor c = db.fetchAll();
 		prefs = PreferenceManager.getDefaultSharedPreferences(this);
-		
-		int range = prefs.getInt("notify_range", 25);
 		
 		String svcName = Context.NOTIFICATION_SERVICE;
 		notificationManager = (NotificationManager) getSystemService(svcName);
+		
+		setup();
+	}
+	
+	private void setup()
+	{
+		Cursor c = db.fetchAll();		
 		
 		if (c.getCount() > 0)
 		{
 			c.moveToFirst();
 			while (!c.isAfterLast())
-			{
-				int latIdx = c.getColumnIndex(SelectedLocationsDbAdapter.KEY_LATITUDE);
-				int lat = c.getInt(latIdx);
-				int lngIdx = c.getColumnIndex(SelectedLocationsDbAdapter.KEY_LONGITUDE);
-				int lng = c.getInt(lngIdx);
-				
-				String name = c.getString(c.getColumnIndex(SelectedLocationsDbAdapter.KEY_NAME));
-				String desc = c.getString(c.getColumnIndex(SelectedLocationsDbAdapter.KEY_DESC));
-				
-				Location l = new Location(lat, lng);
-				l.setText(name, desc);
-				locations.add(l);
-				
+			{				
+				int id = c.getInt(c.getColumnIndex(SelectedLocationsDbAdapter.KEY_ROWID));
+				lastUpdate.put(id, (long) 0);
+				Float[] x = {(float) Float.MAX_VALUE, (float) Float.MAX_VALUE};
+				distance.put(id, x);
 				c.moveToNext();
 			}
+			
 			showNotification();
 			Editor e = prefs.edit();
-			e.putBoolean(RUNNINGPREF, true);
+			e.putBoolean(RUNNING_PREF, true);
 			e.commit();
+
+			subscribe();
 		}
 		else
 		{
@@ -106,12 +115,16 @@ public class SerendipitousService extends Service implements OnSharedPreferenceC
 	public void shutDown()
 	{
 		notificationManager.cancelAll();
-		db.open();
+			
 		db.removeAll();
 		db.close();
+		distance = null;
+		lastUpdate = null;
+
+		unsubscribe();
 		
 		Editor e = prefs.edit();
-		e.putBoolean("ServiceRunning", false);
+		e.putBoolean(RUNNING_PREF, false);
 		e.commit();
 	}
 
@@ -131,5 +144,128 @@ public class SerendipitousService extends Service implements OnSharedPreferenceC
 		prefs = sharedPreferences;
 		
 	}
+	
+	public void notify(int id, boolean entering)
+	{
+		boolean vibrate = prefs.getBoolean("notify_vibration", true);
+		boolean audio = prefs.getBoolean("notify_audible", false);
+		
+		Cursor c = db.fetch(id);
+		c.moveToFirst();
+		
+		String name = c.getString(c.getColumnIndex(SelectedLocationsDbAdapter.KEY_NAME));
+		int lat = c.getInt(c.getColumnIndex(SelectedLocationsDbAdapter.KEY_LATITUDE));
+		int lng = c.getInt(c.getColumnIndex(SelectedLocationsDbAdapter.KEY_LONGITUDE));
+	
+		int icon = R.drawable.marker;
+		String tickerText = getString(R.string.proximity_notification);
+		long when = System.currentTimeMillis();
+		
+		Toast.makeText(this, tickerText, Toast.LENGTH_SHORT).show();
+		
+		Notification notification = new Notification(icon, tickerText, when);
+		notification.flags = Notification.FLAG_INSISTENT;
+		
+		if (vibrate)
+			notification.vibrate = DEFAULT_VIB;
+		if (audio)
+		{
+			notification.sound = Settings.System.DEFAULT_ALARM_ALERT_URI;
+		}
+		
+		Intent i = new Intent(this, RouteTo.class);
+		i.putExtra(RouteTo.NAME_KEY, name);
+		i.putExtra(RouteTo.LAT_KEY, lat);
+		i.putExtra(RouteTo.LONG_KEY, lng);
+		
+		PendingIntent launchIntent = PendingIntent.getActivity(getApplicationContext(), 0, i , 0);
+		notification.setLatestEventInfo(getApplicationContext(), (CharSequence) tickerText, (CharSequence) getString(R.string.notification_subtext) + "\n" + name, launchIntent);
+		
+		notificationManager.notify(1, notification);
+		
+		db.remove(id);
+		
+		if (db.count() == 0)
+			unsubscribe();
+	}
+	
+	@Override
+	public void update(Observable observable, Object data)
+	{
+		android.location.Location currentLoc = (android.location.Location) data;
 
+		Cursor c = db.fetchAll();
+		
+		int range = Integer.parseInt(prefs.getString("notify_range", "100"));
+		c.moveToFirst();
+		int toNotify = 0;
+		boolean inProximity = false;
+		float nearest = Float.MAX_VALUE;
+		
+		boolean[] towards = new boolean[getMaxID(c) + 1]; 
+		
+		while (!c.isAfterLast())
+		{
+			int lat = c.getInt(c.getColumnIndex(SelectedLocationsDbAdapter.KEY_LATITUDE));
+			int lng = c.getInt(c.getColumnIndex(SelectedLocationsDbAdapter.KEY_LONGITUDE));
+			
+			Location l = new Location(lat, lng);
+			
+			int id = c.getInt(c.getColumnIndex(SelectedLocationsDbAdapter.KEY_ROWID));
+			
+			long lockDelta = currentLoc.getTime() - lastUpdate.get(id);
+			
+			if (lockDelta >= CHECK_EVERY)
+			{
+				float dist = l.distanceTo(currentLoc);
+				
+				lastUpdate.put(id, currentLoc.getTime());
+				
+				Float[] distances = distance.get(id);
+				if (distances[1] != Float.MAX_VALUE)
+				{
+					if (dist > distances[0] && distances[0] > distances[1])
+						towards[id] = false;
+					else if (dist < distances[0] && distances[0] < distances[1])
+						towards[id] = true;
+					
+					if (dist < range && dist < nearest)
+					{
+						toNotify = id;
+						inProximity = true;
+						nearest = dist;
+					}
+				}
+				
+				distances[1] = distances[0];
+				distances[0] = dist;
+				distance.put(id, distances);
+			}
+			
+			c.moveToNext();
+		}
+		
+		if (inProximity)
+			notify(toNotify, towards[toNotify]);
+	}
+	
+	public void subscribe()
+	{
+		LocationNotifier lo = new NotifierFactory().setContext(this).getInstance();
+		lo.addObserver(this);
+	}
+	
+	public void unsubscribe()
+	{
+		LocationNotifier lo = new NotifierFactory().setContext(this).getInstance();
+		lo.deleteObserver(this);
+	}
+	
+	public int getMaxID(Cursor c)
+	{
+		if (c.moveToLast())
+			return c.getInt(c.getColumnIndex(SelectedLocationsDbAdapter.KEY_ROWID));
+		else
+			return -1;
+	}
 }
