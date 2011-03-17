@@ -1,20 +1,17 @@
 package com.swindells.map;
 
-import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
 import android.content.Context;
-import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.location.LocationProvider;
 import android.os.Bundle;
 
 public class LocationNotifier extends Observable implements LocationListener
 {
-	private static int MIN_TIME = 1000;
+	private static int MIN_TIME = 10 * 1000;
 	private static int MIN_DISTANCE = 0;
 	private static String PROVIDER = LocationManager.GPS_PROVIDER;
 	
