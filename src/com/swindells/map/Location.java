@@ -1,7 +1,5 @@
 package com.swindells.map;
 
-import com.google.android.maps.GeoPoint;
-
 public class Location
 {
 	private android.location.Location location;
