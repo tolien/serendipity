@@ -24,6 +24,7 @@ public class VisitableList extends ItemizedOverlay<OverlayItem>
 {
 	private ArrayList<OverlayItem> mOverlays = new ArrayList<OverlayItem>();
 	private MapActivity ac;
+	private PopupPanel panel;
 
 	public VisitableList(Drawable marker, MapActivity ac)
 	{
@@ -49,19 +50,15 @@ public class VisitableList extends ItemizedOverlay<OverlayItem>
 		populate();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.google.android.maps.ItemizedOverlay#onTouchEvent(android.view.MotionEvent
-	 * , com.google.android.maps.MapView)
-	 */
 	@Override
 	public boolean onTap(int i)
 	{
 		OverlayItem oi = mOverlays.get(i);
 		
-		PopupPanel panel = new PopupPanel(oi);
+		if (panel != null)
+			panel.hide();
+		
+		panel = new PopupPanel(oi);		
 		panel.show();
 		
 		return true;
@@ -119,7 +116,6 @@ public class VisitableList extends ItemizedOverlay<OverlayItem>
 					RelativeLayout.LayoutParams.WRAP_CONTENT,
 					location,
 					MapView.LayoutParams.CENTER_HORIZONTAL);
-			//lp.setMargins(0, 0, 0, 60);
 
 			parent.addView(popup, lp);
 		}
