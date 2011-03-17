@@ -2,11 +2,8 @@ package com.swindells.map;
 
 import java.util.regex.Pattern;
 
-import com.google.android.maps.GeoPoint;
-
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ExpandableListActivity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
