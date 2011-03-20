@@ -8,6 +8,7 @@
 		<item>55.86000</item>
 		<item>55.86015</item>
 		<item>55.86308</item>
+		<item>55.86141</item>
 	</array>
 	<array name="longitude">
 		<item>-4.25229</item>
@@ -17,6 +18,7 @@
 		<item>-4.25690</item>
 		<item>-4.25236</item>
 		<item>-4.25292</item>
+		<item>-4.24403</item>
 	</array>
 	<array name="name">
 		<item>Queen Street Station</item>
@@ -26,5 +28,6 @@
 		<item>Caffe Nero Union Street</item>
 		<item>Gallery of Modern Art</item>
 		<item>Buchanan Galleries</item>
+		<item>Collins Gallery</item>
 	</array>
 </resources>
