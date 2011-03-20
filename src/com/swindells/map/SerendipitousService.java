@@ -3,6 +3,7 @@ package com.swindells.map;
 import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Random;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -23,6 +24,8 @@ public class SerendipitousService extends Service implements OnSharedPreferenceC
 {
 	public static String RUNNING_PREF = "ServiceRunning";
 	public static String PROXIMITY_ALERT = "com.swindells.map.ProximityAlert";
+	
+	private static Random rng = new Random();
 	
 	private static int CHECK_EVERY = 30 * 1000;
 	
@@ -145,10 +148,22 @@ public class SerendipitousService extends Service implements OnSharedPreferenceC
 		
 	}
 	
-	public void notify(int id, boolean entering)
+	public void notify(int id, boolean moving_towards)
 	{
 		boolean vibrate = prefs.getBoolean("notify_vibration", true);
 		boolean audio = prefs.getBoolean("notify_audible", false);
+		
+		Float dist = distance.get(id)[0];
+		int range = Integer.parseInt(prefs.getString("notify_range", "100"));
+		long[] vibration_pattern = DEFAULT_VIB;
+		
+		for (int i = 0; i < vibration_pattern.length; i = i + 2)
+		{
+			vibration_pattern[i] = (long) (vibration_pattern[i] * (dist / range));
+			
+			if (!moving_towards)
+				vibration_pattern[i] = (long) (vibration_pattern[i] * rng.nextDouble());
+		}
 		
 		Cursor c = db.fetch(id);
 		c.moveToFirst();
@@ -167,7 +182,7 @@ public class SerendipitousService extends Service implements OnSharedPreferenceC
 		notification.flags = Notification.FLAG_INSISTENT;
 		
 		if (vibrate)
-			notification.vibrate = DEFAULT_VIB;
+			notification.vibrate = vibration_pattern;
 		if (audio)
 		{
 			notification.sound = Settings.System.DEFAULT_ALARM_ALERT_URI;
@@ -177,16 +192,12 @@ public class SerendipitousService extends Service implements OnSharedPreferenceC
 		i.putExtra(RouteTo.NAME_KEY, name);
 		i.putExtra(RouteTo.LAT_KEY, lat);
 		i.putExtra(RouteTo.LONG_KEY, lng);
+		i.putExtra(RouteTo.ID_KEY, id);
 		
 		PendingIntent launchIntent = PendingIntent.getActivity(getApplicationContext(), 0, i , 0);
 		notification.setLatestEventInfo(getApplicationContext(), (CharSequence) tickerText, (CharSequence) getString(R.string.notification_subtext) + "\n" + name, launchIntent);
 		
 		notificationManager.notify(1, notification);
-		
-		db.remove(id);
-		
-		if (db.count() == 0)
-			unsubscribe();
 	}
 	
 	@Override
@@ -206,6 +217,12 @@ public class SerendipitousService extends Service implements OnSharedPreferenceC
 		
 		while (!c.isAfterLast())
 		{
+			if (db.count() == 0)
+			{
+				unsubscribe();
+				break;
+			}
+			
 			int lat = c.getInt(c.getColumnIndex(SelectedLocationsDbAdapter.KEY_LATITUDE));
 			int lng = c.getInt(c.getColumnIndex(SelectedLocationsDbAdapter.KEY_LONGITUDE));
 			
