@@ -67,7 +67,7 @@ public class RouteTo extends Activity
 			@Override
 			public void onClick(DialogInterface dialog, int which)
 			{
-				SelectedLocationsDbAdapter db = new SelectedLocationsDbAdapter(ctx);
+				SelectedLocationList db = new SelectedLocationList(ctx);
 				db.remove(id);
 				finish();				
 			}

@@ -12,12 +12,12 @@ import android.widget.TextView;
 
 public class AddLocation extends Activity
 {
-	private SelectedLocationsDbAdapter mdbHelper;
+	private SelectedLocationList mdbHelper;
 
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-		mdbHelper = new SelectedLocationsDbAdapter(this);
+		mdbHelper = new SelectedLocationList(this);
 
 
 		// mdbHelper = new LocationsDbAdapter(this);
@@ -33,11 +33,11 @@ public class AddLocation extends Activity
 			TextView title = (TextView) findViewById(R.id.locationName);
 			TextView more = (TextView) findViewById(R.id.locationName);
 			
-			String name = extras.getString(SelectedLocationsDbAdapter.KEY_NAME);
-			String desc = extras.getString(SelectedLocationsDbAdapter.KEY_DESC);
+			String name = extras.getString(SelectedLocationList.KEY_NAME);
+			String desc = extras.getString(SelectedLocationList.KEY_DESC);
 			
-			latitude = extras.getInt(SelectedLocationsDbAdapter.KEY_LATITUDE);
-			longitude = extras.getInt(SelectedLocationsDbAdapter.KEY_LONGITUDE);
+			latitude = extras.getInt(SelectedLocationList.KEY_LATITUDE);
+			longitude = extras.getInt(SelectedLocationList.KEY_LONGITUDE);
 			title.setText(name);
 			if (desc != null)
 				more.setText(desc);

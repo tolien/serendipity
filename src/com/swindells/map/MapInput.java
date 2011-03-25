@@ -74,7 +74,7 @@ public class MapInput extends MapActivity implements Observer
 
 	private void addVisitables(List<Overlay> overlayList)
 	{
-		VisitableList places = new VisitableList(getResources().getDrawable(
+		VisitableOverlay places = new VisitableOverlay(getResources().getDrawable(
 				R.drawable.marker), this);
 
 
@@ -83,7 +83,7 @@ public class MapInput extends MapActivity implements Observer
 		updateLocation(lastKnownLocation);
 		
 
-		LocationDbAdapter db = new LocationDbAdapter(this);
+		LocationList db = new LocationList(this);
 		db.open();
 		Cursor c = db.fetchAll();
 		
@@ -93,11 +93,11 @@ public class MapInput extends MapActivity implements Observer
 			
 			while (!c.isAfterLast())
 			{
-				int lat = c.getInt(c.getColumnIndex(LocationDbAdapter.KEY_LATITUDE));
-				int lng = c.getInt(c.getColumnIndex(LocationDbAdapter.KEY_LONGITUDE));
+				int lat = c.getInt(c.getColumnIndex(LocationList.KEY_LATITUDE));
+				int lng = c.getInt(c.getColumnIndex(LocationList.KEY_LONGITUDE));
 				
-				String name = c.getString(c.getColumnIndex(LocationDbAdapter.KEY_NAME));
-				String desc = c.getString(c.getColumnIndex(LocationDbAdapter.KEY_DESC));
+				String name = c.getString(c.getColumnIndex(LocationList.KEY_NAME));
+				String desc = c.getString(c.getColumnIndex(LocationList.KEY_DESC));
 				
 				GeoPoint location = new GeoPoint(lat, lng);
 				OverlayItem i = new OverlayItem(location, name, desc);
@@ -190,7 +190,7 @@ public class MapInput extends MapActivity implements Observer
 	{
 		boolean serviceRunning = prefs.getBoolean(SerendipitousService.RUNNING_PREF, false);
 
-		SelectedLocationsDbAdapter sldba = new SelectedLocationsDbAdapter(this);
+		SelectedLocationList sldba = new SelectedLocationList(this);
 		int c = sldba.count();
 		
 		if (!serviceRunning)

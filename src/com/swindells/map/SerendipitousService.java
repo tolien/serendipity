@@ -37,7 +37,7 @@ public class SerendipitousService extends Service implements OnSharedPreferenceC
 	private HashMap<Integer, Float[]> distance = new HashMap<Integer, Float[]>();
 	private SharedPreferences prefs;
 	
-	private SelectedLocationsDbAdapter db;
+	private SelectedLocationList db;
 	
 	/* (non-Javadoc)
 	 * @see android.app.Service#onCreate()
@@ -45,7 +45,7 @@ public class SerendipitousService extends Service implements OnSharedPreferenceC
 	@Override
 	public void onCreate()
 	{
-		db = new SelectedLocationsDbAdapter(this);
+		db = new SelectedLocationList(this);
 		prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		
 		String svcName = Context.NOTIFICATION_SERVICE;
@@ -63,7 +63,7 @@ public class SerendipitousService extends Service implements OnSharedPreferenceC
 			c.moveToFirst();
 			while (!c.isAfterLast())
 			{				
-				int id = c.getInt(c.getColumnIndex(SelectedLocationsDbAdapter.KEY_ROWID));
+				int id = c.getInt(c.getColumnIndex(SelectedLocationList.KEY_ROWID));
 				lastUpdate.put(id, (long) 0);
 				Float[] x = {(float) Float.MAX_VALUE, (float) Float.MAX_VALUE};
 				distance.put(id, x);
@@ -168,9 +168,9 @@ public class SerendipitousService extends Service implements OnSharedPreferenceC
 		Cursor c = db.fetch(id);
 		c.moveToFirst();
 		
-		String name = c.getString(c.getColumnIndex(SelectedLocationsDbAdapter.KEY_NAME));
-		int lat = c.getInt(c.getColumnIndex(SelectedLocationsDbAdapter.KEY_LATITUDE));
-		int lng = c.getInt(c.getColumnIndex(SelectedLocationsDbAdapter.KEY_LONGITUDE));
+		String name = c.getString(c.getColumnIndex(SelectedLocationList.KEY_NAME));
+		int lat = c.getInt(c.getColumnIndex(SelectedLocationList.KEY_LATITUDE));
+		int lng = c.getInt(c.getColumnIndex(SelectedLocationList.KEY_LONGITUDE));
 	
 		int icon = R.drawable.marker;
 		String tickerText = getString(R.string.proximity_notification);
@@ -223,12 +223,12 @@ public class SerendipitousService extends Service implements OnSharedPreferenceC
 				break;
 			}
 			
-			int lat = c.getInt(c.getColumnIndex(SelectedLocationsDbAdapter.KEY_LATITUDE));
-			int lng = c.getInt(c.getColumnIndex(SelectedLocationsDbAdapter.KEY_LONGITUDE));
+			int lat = c.getInt(c.getColumnIndex(SelectedLocationList.KEY_LATITUDE));
+			int lng = c.getInt(c.getColumnIndex(SelectedLocationList.KEY_LONGITUDE));
 			
 			Location l = new Location(lat, lng);
 			
-			int id = c.getInt(c.getColumnIndex(SelectedLocationsDbAdapter.KEY_ROWID));
+			int id = c.getInt(c.getColumnIndex(SelectedLocationList.KEY_ROWID));
 			
 			long lockDelta = currentLoc.getTime() - lastUpdate.get(id);
 			
@@ -281,7 +281,7 @@ public class SerendipitousService extends Service implements OnSharedPreferenceC
 	public int getMaxID(Cursor c)
 	{
 		if (c.moveToLast())
-			return c.getInt(c.getColumnIndex(SelectedLocationsDbAdapter.KEY_ROWID));
+			return c.getInt(c.getColumnIndex(SelectedLocationList.KEY_ROWID));
 		else
 			return -1;
 	}

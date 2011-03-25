@@ -20,13 +20,13 @@ import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapView;
 import com.google.android.maps.OverlayItem;
 
-public class VisitableList extends ItemizedOverlay<OverlayItem>
+public class VisitableOverlay extends ItemizedOverlay<OverlayItem>
 {
 	private ArrayList<OverlayItem> mOverlays = new ArrayList<OverlayItem>();
 	private MapActivity ac;
 	private PopupPanel panel;
 
-	public VisitableList(Drawable marker, MapActivity ac)
+	public VisitableOverlay(Drawable marker, MapActivity ac)
 	{
 		super(boundCenterBottom(marker));
 		this.ac = ac;
@@ -93,10 +93,10 @@ public class VisitableList extends ItemizedOverlay<OverlayItem>
 			location = oi.getPoint();
 			
 			final Intent addIntent = new Intent(ac, AddLocation.class);
-			addIntent.putExtra(SelectedLocationsDbAdapter.KEY_NAME, oi.getTitle());
-			addIntent.putExtra(SelectedLocationsDbAdapter.KEY_DESC, oi.getSnippet());
-			addIntent.putExtra(SelectedLocationsDbAdapter.KEY_LATITUDE, oi.getPoint().getLatitudeE6());
-			addIntent.putExtra(SelectedLocationsDbAdapter.KEY_LONGITUDE, oi.getPoint().getLongitudeE6());
+			addIntent.putExtra(SelectedLocationList.KEY_NAME, oi.getTitle());
+			addIntent.putExtra(SelectedLocationList.KEY_DESC, oi.getSnippet());
+			addIntent.putExtra(SelectedLocationList.KEY_LATITUDE, oi.getPoint().getLatitudeE6());
+			addIntent.putExtra(SelectedLocationList.KEY_LONGITUDE, oi.getPoint().getLongitudeE6());
 			
 			popup.setOnClickListener(new View.OnClickListener() {
 				public void onClick(View v) {
