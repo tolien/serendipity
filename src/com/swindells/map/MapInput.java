@@ -67,6 +67,8 @@ public class MapInput extends MapActivity implements Observer
 		myMapView.setBuiltInZoomControls(true);
 		mapController.setZoom(zoomLevel);
 		
+		mapController.animateTo(new GeoPoint((int) (55.86015 * 1E6), (int) (-4.25236 * 1E6)));
+		
 		addVisitables(overlays);
 		
 		myMapView.postInvalidate();
@@ -165,8 +167,7 @@ public class MapInput extends MapActivity implements Observer
 	protected void onResume()
 	{
 		subscribe();
-		//Toast t = Toast.makeText(this, "onResume" + " called", Toast.LENGTH_SHORT);
-		//t.show();
+		
 		super.onResume();
 	}
 
