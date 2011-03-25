@@ -194,18 +194,18 @@ public class MapInput extends MapActivity implements Observer
 		SelectedLocationList sldba = new SelectedLocationList(this);
 		int c = sldba.count();
 		
-		if (!serviceRunning)
+		menu.removeItem(GO_ID);
+		
+		if (c > 0)
 		{
-			if (c > 0)
+			if (!serviceRunning)
 			{
-				menu.removeItem(GO_ID);
 				menu.add(0, GO_ID, 1, R.string.menu_start_service).setIcon(android.R.drawable.ic_media_play);
 			}
-		}
-		else
-		{
-			menu.removeItem(GO_ID);
-			menu.add(0, STOP_ID, 1, R.string.menu_stop_service).setIcon(android.R.drawable.ic_media_pause);
+			else
+			{
+				menu.add(0, STOP_ID, 1, R.string.menu_stop_service).setIcon(android.R.drawable.ic_media_pause);
+			}
 		}
 	
 		menu.removeItem(SCAN_ID);
