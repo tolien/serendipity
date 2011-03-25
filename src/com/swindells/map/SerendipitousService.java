@@ -27,7 +27,7 @@ public class SerendipitousService extends Service implements OnSharedPreferenceC
 	
 	private static Random rng = new Random();
 	
-	private static int CHECK_EVERY = 30 * 1000;
+	private static int CHECK_EVERY = 10 * 1000;
 	
 	private static long[] DEFAULT_VIB = new long[] {500, 500, 500, 500, 500};
 	
