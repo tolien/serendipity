@@ -5,9 +5,9 @@
     
     <EditTextPreference android:key="notify_range"
     android:title="Distance"
-    android:summary="Distance in metres"
+    android:summary="@string/pref_distance_summary"
     android:defaultValue="100"
-    android:dialogTitle="Distance"
+    android:dialogTitle="@string/pref_distance"
     android:digits="0123456789"
     android:inputType="number"
     />
@@ -16,12 +16,12 @@
     <PreferenceCategory android:title="Notify with:">
     	<CheckBoxPreference
     	android:key="notify_vibration"
-    	android:title="Vibration"
+    	android:title="@string/pref_vibrate"
     	android:defaultValue="true"
     	/>
     	<CheckBoxPreference
     	android:key="notify_audible"
-    	android:title="Sound"
+    	android:title="@string/pref_audio"
     	android:defaultValue="false"
     	/>
     </PreferenceCategory>
