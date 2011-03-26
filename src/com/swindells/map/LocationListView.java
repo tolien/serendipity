@@ -24,7 +24,6 @@ public class LocationListView extends ListActivity
 		setContentView(R.layout.locationlist);
 		
 		db = new LocationList(this);
-		db.open();
 		Cursor c = db.fetchAll();
 		startManagingCursor(c);
 		

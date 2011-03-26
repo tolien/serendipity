@@ -93,7 +93,7 @@ public class SerendipitousService extends Service implements OnSharedPreferenceC
 		return Service.START_STICKY;
 	}
 
-	public void showNotification()
+	private void showNotification()
 	{
 		int icon = R.drawable.marker;
 		String tickerText = getString(R.string.service_started_notification_text);
@@ -115,7 +115,7 @@ public class SerendipitousService extends Service implements OnSharedPreferenceC
 		return null;
 	}
 	
-	public void shutDown()
+	private void shutDown()
 	{
 		notificationManager.cancelAll();
 			
@@ -148,7 +148,7 @@ public class SerendipitousService extends Service implements OnSharedPreferenceC
 		
 	}
 	
-	public void notify(int id, boolean moving_towards)
+	private void notify(int id, boolean moving_towards)
 	{
 		boolean vibrate = prefs.getBoolean("notify_vibration", true);
 		boolean audio = prefs.getBoolean("notify_audible", false);
@@ -266,19 +266,19 @@ public class SerendipitousService extends Service implements OnSharedPreferenceC
 			notify(toNotify, towards[toNotify]);
 	}
 	
-	public void subscribe()
+	private void subscribe()
 	{
 		LocationNotifier lo = new NotifierFactory().setContext(this).getInstance();
 		lo.addObserver(this);
 	}
 	
-	public void unsubscribe()
+	private void unsubscribe()
 	{
 		LocationNotifier lo = new NotifierFactory().setContext(this).getInstance();
 		lo.deleteObserver(this);
 	}
 	
-	public int getMaxID(Cursor c)
+	private int getMaxID(Cursor c)
 	{
 		if (c.moveToLast())
 			return c.getInt(c.getColumnIndex(SelectedLocationList.KEY_ROWID));

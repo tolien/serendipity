@@ -84,7 +84,7 @@ public class LocationList
 	}
 
 
-	public LocationList open() throws SQLException {
+	private LocationList open() throws SQLException {
         mDbHelper = new DatabaseHelper(mCtx);
         mDb = mDbHelper.getWritableDatabase();
         

@@ -86,7 +86,6 @@ public class MapInput extends MapActivity implements Observer
 		
 
 		LocationList db = new LocationList(this);
-		db.open();
 		Cursor c = db.fetchAll();
 		
 		if (c.getCount() > 0)
@@ -113,7 +112,7 @@ public class MapInput extends MapActivity implements Observer
 		
 	}
 
-	public void updateLocation(Location location)
+	private void updateLocation(Location location)
 	{
 		if (location != null)
 		{
@@ -307,19 +306,19 @@ public class MapInput extends MapActivity implements Observer
 		updateLocation ((Location) data);		
 	}
 	
-	public void subscribe()
+	private void subscribe()
 	{
 		LocationNotifier lo = new NotifierFactory().setContext(this).getInstance();
 		lo.addObserver(this);
 	}
 	
-	public void unsubscribe()
+	private void unsubscribe()
 	{
 		LocationNotifier lo = new NotifierFactory().setContext(this).getInstance();
 		lo.deleteObserver(this);
 	}
 	
-	public boolean serviceRunning()
+	private boolean serviceRunning()
 	{
 		return prefs.getBoolean(SerendipitousService.RUNNING_PREF, false);
 	}
