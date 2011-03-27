@@ -41,7 +41,7 @@ public class RouteTo extends Activity
 		builder.setMessage(getString(R.string.directions_question) + " " + name + "?");
 		builder.setTitle(name);
 		builder.setCancelable(false);
-		builder.setPositiveButton("Yes", new DialogInterface.OnClickListener()
+		builder.setPositiveButton(getString(R.string.confirm), new DialogInterface.OnClickListener()
 		{
 			@Override
 			public void onClick(DialogInterface dialog, int which)
@@ -51,7 +51,7 @@ public class RouteTo extends Activity
 			}
 		});
 		
-		builder.setNeutralButton("No", new DialogInterface.OnClickListener()
+		builder.setNeutralButton(getString(R.string.decline), new DialogInterface.OnClickListener()
 		{
 			
 			@Override
@@ -61,7 +61,7 @@ public class RouteTo extends Activity
 			}
 		});
 		
-		builder.setNegativeButton("Stop notifications", new DialogInterface.OnClickListener()
+		builder.setNegativeButton(getString(R.string.stop_notification), new DialogInterface.OnClickListener()
 		{
 			
 			@Override
