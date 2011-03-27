@@ -197,7 +197,7 @@ public class SerendipitousService extends Service implements OnSharedPreferenceC
 		PendingIntent launchIntent = PendingIntent.getActivity(getApplicationContext(), 0, i , 0);
 		notification.setLatestEventInfo(getApplicationContext(), (CharSequence) tickerText, (CharSequence) getString(R.string.notification_subtext) + "\n" + name, launchIntent);
 		
-		notificationManager.notify(1, notification);
+		notificationManager.notify(id + 2, notification);
 	}
 	
 	@Override
