@@ -6,8 +6,8 @@
 	<string name="menu_map_center">Current location</string>
 	<string name="addloc_question">Add this location to the list you want to visit?</string>
 	<string name="no_location_given">No Location</string>
-	<string name="add_confirm">Yes</string>
-	<string name="add_decline">No</string>
+	<string name="confirm">Yes</string>
+	<string name="decline">No</string>
 	<string name="bubble_tap_instruction">Tap to view more options</string>
 	<string name="menu_start_service">Go</string>
 	<string name="menu_stop_service">Stop</string>
@@ -26,4 +26,6 @@
 	
 	<string name="pref_vibrate">Vibration</string>
 	<string name="pref_audio">Sound</string>
+	
+	<string name="stop_notification">Remove location</string>
 </resources>
