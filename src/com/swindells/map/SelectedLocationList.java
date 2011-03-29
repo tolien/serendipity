@@ -112,11 +112,14 @@ public class SelectedLocationList
     public Cursor fetch(int id)
     {
     	String[] columns = { KEY_ROWID, KEY_LATITUDE, KEY_LONGITUDE, KEY_NAME, KEY_DESC };
-    	return mDb.query(DATABASE_TABLE, columns, KEY_ROWID + " = " + id, null, null, null, null);
+    	return mDb.query(DATABASE_TABLE, columns, KEY_ROWID + " = " + Integer.toString(id), null, null, null, null);
     }
     
     public boolean remove(int id)
     {
-    	return mDb.delete(DATABASE_TABLE, KEY_ROWID + " = " + id , null) == 1;
+    	String clause = KEY_ROWID + "=?";
+    	String[] params = {id + ""};
+    	int result = mDb.delete(DATABASE_TABLE, clause, params);
+    	return result == 1;
     }
 }

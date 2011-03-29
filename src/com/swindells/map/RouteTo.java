@@ -51,6 +51,8 @@ public class RouteTo extends Activity
 				
 				Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:ll=" + lat / 1E6 + "," + lng / 1E6 + "&mode=w"));
 				startActivity(i);
+				
+				finish();
 			}
 		});
 		
@@ -71,7 +73,7 @@ public class RouteTo extends Activity
 			public void onClick(DialogInterface dialog, int which)
 			{
 				SelectedLocationList db = new SelectedLocationList(ctx);
-				db.remove(id);
+				boolean result = db.remove(id);
 				finish();				
 			}
 		});

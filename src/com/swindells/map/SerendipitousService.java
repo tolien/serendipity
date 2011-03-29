@@ -203,6 +203,11 @@ public class SerendipitousService extends Service implements OnSharedPreferenceC
 	@Override
 	public void update(Observable observable, Object data)
 	{
+		int count = db.count();
+		if (count == 0)
+		{
+			shutDown();
+		}
 		android.location.Location currentLoc = (android.location.Location) data;
 
 		Cursor c = db.fetchAll();
@@ -216,13 +221,7 @@ public class SerendipitousService extends Service implements OnSharedPreferenceC
 		boolean[] towards = new boolean[getMaxID(c) + 1]; 
 		
 		while (!c.isAfterLast())
-		{
-			if (db.count() == 0)
-			{
-				shutDown();
-				break;
-			}
-			
+		{			
 			int lat = c.getInt(c.getColumnIndex(SelectedLocationList.KEY_LATITUDE));
 			int lng = c.getInt(c.getColumnIndex(SelectedLocationList.KEY_LONGITUDE));
 			
