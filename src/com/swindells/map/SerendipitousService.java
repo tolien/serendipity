@@ -219,7 +219,7 @@ public class SerendipitousService extends Service implements OnSharedPreferenceC
 		{
 			if (db.count() == 0)
 			{
-				unsubscribe();
+				shutDown();
 				break;
 			}
 			
