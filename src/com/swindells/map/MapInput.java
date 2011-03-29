@@ -195,7 +195,7 @@ public class MapInput extends MapActivity implements Observer
 		
 		menu.removeItem(GO_ID);
 		
-		if (c > 0)
+		if (serviceRunning || c > 0)
 		{
 			if (!serviceRunning)
 			{
