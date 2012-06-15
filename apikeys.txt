@@ -1,2 +1,0 @@
-release API key: 0SP22orPtytAm6hmjxZwivDWbiNzSfheR74BEsg
-debug API key: 0SP22orPtytDijGJPmrBbxD63DK459M5loeE9Wg
